@@ -1,6 +1,90 @@
-/* TopNavigationBar responsive styles */
-.outbound-call-btn .btn-text {
-  display: inline;
+/* TopNavigationBar styles */
+.top-navigation-header {
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.workspace-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1890ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-controls {
+  flex-shrink: 0;
+}
+
+.outbound-call-btn {
+  min-width: auto;
+  
+  .btn-text {
+    display: inline;
+  }
+  
+  .sound-wave-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    margin-left: 4px;
+  }
+  
+  .sound-wave-bar {
+    width: 2px;
+    height: 8px;
+    background-color: white;
+    border-radius: 1px;
+    animation: soundWave 1.4s ease-in-out infinite;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.1s; }
+    &:nth-child(3) { animation-delay: 0.2s; }
+  }
+}
+
+.status-controls {
+  white-space: nowrap;
+  
+  .status-text {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+  
+  .status-select {
+    width: 100px;
+  }
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    
+    &.online { background-color: #52c41a; }
+    &.offline { background-color: #ff4d4f; }
+    &.break { background-color: #faad14; }
+  }
+}
+
+@keyframes soundWave {
+  0%, 100% { height: 4px; }
+  50% { height: 12px; }
 }
 
 /* 移动端响应式调整 */

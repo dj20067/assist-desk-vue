@@ -90,39 +90,17 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
   };
 
   return (
-    <Header 
-      style={{ 
-        backgroundColor: '#fff', 
-        borderBottom: '1px solid #f0f0f0',
-        padding: '0 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '56px',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-        boxSizing: 'border-box'
-      }}
-    >
-      <div style={{ 
-        fontSize: '18px', 
-        fontWeight: 'bold', 
-        color: '#1890ff',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-      }}>
+    <Header className="top-navigation-header">
+      <div className="workspace-title">
         客服工作台
       </div>
       
-      <Space size="large" style={{ flexShrink: 0 }}>
+      <Space size="large" className="header-controls">
         <Button 
           icon={<PhoneOutlined />} 
           type="primary"
           size="small"
           style={{ 
-            minWidth: 'auto', 
             backgroundColor: getCallStateColor(callState),
             borderColor: getCallStateColor(callState)
           }}
@@ -141,71 +119,37 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
         >
           <span className="btn-text">{getCallStateText(callState)}</span>
           {callState === 'connected' && (
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 1, marginLeft: 4 }}>
+            <div className="sound-wave-container">
               {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: '2px',
-                    height: '8px',
-                    backgroundColor: 'white',
-                    borderRadius: '1px',
-                    animation: `soundWave 1.4s ease-in-out infinite`,
-                    animationDelay: `${i * 0.1}s`
-                  }}
-                />
+                <div key={i} className="sound-wave-bar" />
               ))}
             </div>
           )}
         </Button>
         
-        <Space align="center" style={{ whiteSpace: 'nowrap' }}>
-          <Text style={{ marginRight: 8, fontSize: '14px' }}>状态：</Text>
+        <Space align="center" className="status-controls">
+          <Text className="status-text">状态：</Text>
           <Select
             value={status}
             onChange={handleStatusChange}
-            style={{ width: 100 }}
+            className="status-select"
             size="small"
           >
             <Select.Option value="online">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div 
-                  style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    backgroundColor: getStatusColor('online'),
-                    marginRight: 6 
-                  }} 
-                />
+              <div className="status-option">
+                <div className="status-dot online" />
                 在线
               </div>
             </Select.Option>
             <Select.Option value="offline">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div 
-                  style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    backgroundColor: getStatusColor('offline'),
-                    marginRight: 6 
-                  }} 
-                />
+              <div className="status-option">
+                <div className="status-dot offline" />
                 离线
               </div>
             </Select.Option>
             <Select.Option value="break">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div 
-                  style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    backgroundColor: getStatusColor('break'),
-                    marginRight: 6 
-                  }} 
-                />
+              <div className="status-option">
+                <div className="status-dot break" />
                 小休
               </div>
             </Select.Option>
@@ -224,13 +168,6 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
         quickCallData={quickCallData}
       />
       
-      {/* CSS 动画样式 */}
-      <style>{`
-        @keyframes soundWave {
-          0%, 100% { height: 4px; }
-          50% { height: 12px; }
-        }
-      `}</style>
     </Header>
   );
 };
