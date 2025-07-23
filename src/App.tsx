@@ -1,9 +1,6 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Layout, message } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import TopNavigationBar, { OnlineStatus } from "./components/TopNavigationBar";
 import Index from "./pages/Index";
@@ -22,10 +19,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider locale={zhCN}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+        <BrowserRouter>
             <Layout style={{ minHeight: '100vh', height: '100vh', overflow: 'hidden' }}>
               <TopNavigationBar onStatusChange={handleStatusChange} />
               <Routes>
@@ -35,7 +29,6 @@ const App = () => {
               </Routes>
             </Layout>
           </BrowserRouter>
-        </TooltipProvider>
       </ConfigProvider>
     </QueryClientProvider>
   );

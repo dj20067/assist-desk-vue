@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
-import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined, FileSearchOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { User, Settings, History, Info } from 'lucide-react';
+import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined, FileSearchOutlined, PoweroffOutlined, SettingOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { OnlineStatus } from './TopNavigationBar';
 import './CustomerServiceWorkspace.less';
 const {
@@ -638,7 +637,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           <Panel 
             header={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <User size={16} color="#1890ff" />
+                <UserOutlined style={{ color: "#1890ff" }} />
                 <span>客户信息</span>
               </div>
             } 
@@ -709,7 +708,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           <Panel 
             header={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Settings size={16} color="#52c41a" />
+                <SettingOutlined style={{ color: "#52c41a" }} />
                 <span>应用与日志</span>
               </div>
             } 
@@ -826,7 +825,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           <Panel 
             header={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <History size={16} color="#faad14" />
+                <HistoryOutlined style={{ color: "#faad14" }} />
                 <span>服务历史</span>
               </div>
             } 
@@ -860,7 +859,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           <Panel 
             header={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Info size={16} color="#722ed1" />
+                <InfoCircleOutlined style={{ color: "#722ed1" }} />
                 <span>更多信息</span>
               </div>
             } 
