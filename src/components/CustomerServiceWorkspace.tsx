@@ -348,7 +348,7 @@ const CustomerServiceWorkspace: React.FC = () => {
   const renderMessage = (message: Message) => (
     <div
       key={message.id}
-      className={`message ${message.sender === 'user' ? 'message-agent' : 'message-user'}`}
+      className={`message ${message.sender === 'user' ? 'message-user' : 'message-agent'}`}
     >
       <div className="message-content">
         {message.type === 'code' ? (
