@@ -519,8 +519,13 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           <Space>
             <Button icon={<SwapOutlined />} onClick={() => setTransferModalVisible(true)}>转接</Button>
             <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
-            <Button onClick={() => setEndSessionModalVisible(true)}>结束会话</Button>
-            <Button icon={<FileTextOutlined />} type="primary">
+            <Button 
+              danger 
+              onClick={() => setEndSessionModalVisible(true)}
+            >
+              结束会话
+            </Button>
+            <Button icon={<FileTextOutlined />}>
               新建工单
             </Button>
           </Space>
