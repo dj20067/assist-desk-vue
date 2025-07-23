@@ -1070,13 +1070,13 @@ const CustomerServiceWorkspace: React.FC = () => {
         </div>
       ))}
 
-      {/* 转接申请总数统计 */}
-      {transferNotifications.length > 0 && (
+      {/* 转接申请总数统计 - 只在多个申请时显示 */}
+      {transferNotifications.length > 1 && (
         <div 
           style={{
             position: 'fixed',
             bottom: '20px',
-            right: transferNotifications.length === 1 ? '390px' : '20px',
+            right: '20px',
             backgroundColor: '#ff4d4f',
             color: 'white',
             borderRadius: '20px',
@@ -1086,9 +1086,9 @@ const CustomerServiceWorkspace: React.FC = () => {
             boxShadow: '0 2px 8px rgba(255,77,79,0.3)',
             zIndex: 1001,
             animation: 'pulse 2s infinite',
-            cursor: transferNotifications.length > 1 ? 'pointer' : 'default'
+            cursor: 'pointer'
           }}
-          onClick={transferNotifications.length > 1 ? handleShowTransferList : undefined}
+          onClick={handleShowTransferList}
         >
           {transferNotifications.length} 个转接申请待处理
         </div>
