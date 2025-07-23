@@ -612,15 +612,40 @@ const CustomerServiceWorkspace: React.FC = () => {
                 />
                 <div className="log-list">
                   <Timeline>
-                    <Timeline.Item color="green">
-                      <Text type="secondary">10:30</Text> 流程执行成功
-                    </Timeline.Item>
-                    <Timeline.Item color="red">
-                      <Text type="secondary">10:25</Text> 
-                      <Text style={{ color: '#ff4d4f' }}>连接超时错误</Text>
+                    <Timeline.Item color="blue">
+                      <div className="log-entry">
+                        <Text className="log-timestamp">[2024-01-22 14:30:15]</Text>
+                        <Tag color="blue" className="log-level">INFO</Tag>
+                        <Text className="log-message">流程开始执行</Text>
+                      </div>
                     </Timeline.Item>
                     <Timeline.Item color="blue">
-                      <Text type="secondary">10:20</Text> 开始执行流程
+                      <div className="log-entry">
+                        <Text className="log-timestamp">[2024-01-22 14:30:16]</Text>
+                        <Tag color="blue" className="log-level">INFO</Tag>
+                        <Text className="log-message">正在连接数据源</Text>
+                      </div>
+                    </Timeline.Item>
+                    <Timeline.Item color="orange">
+                      <div className="log-entry">
+                        <Text className="log-timestamp">[2024-01-22 14:30:17]</Text>
+                        <Tag color="orange" className="log-level">WARN</Tag>
+                        <Text className="log-message">连接超时，正在重试</Text>
+                      </div>
+                    </Timeline.Item>
+                    <Timeline.Item color="red">
+                      <div className="log-entry">
+                        <Text className="log-timestamp">[2024-01-22 14:30:20]</Text>
+                        <Tag color="red" className="log-level">ERROR</Tag>
+                        <Text className="log-message">连接失败，请检查网络</Text>
+                      </div>
+                    </Timeline.Item>
+                    <Timeline.Item color="blue">
+                      <div className="log-entry">
+                        <Text className="log-timestamp">[2024-01-22 14:30:21]</Text>
+                        <Tag color="blue" className="log-level">INFO</Tag>
+                        <Text className="log-message">流程执行结束</Text>
+                      </div>
                     </Timeline.Item>
                   </Timeline>
                 </div>
