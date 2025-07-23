@@ -663,8 +663,9 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                     icon={<PhoneOutlined />}
                     style={{ 
                       minWidth: 'auto',
+                      width: '24px',
                       height: '24px',
-                      padding: '0 8px'
+                      padding: '0'
                     }}
                     onClick={() => {
                       // 直接触发呼叫，不显示完整号码
@@ -672,9 +673,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                         detail: { phone: '13888888888', name: '张小明' }
                       }));
                     }}
-                  >
-                    呼叫
-                  </Button>
+                  />
                 </div>
               </div>
               <div className="info-item">
