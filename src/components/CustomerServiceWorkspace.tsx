@@ -1062,6 +1062,28 @@ const CustomerServiceWorkspace: React.FC = () => {
           </div>
         </div>
       ))}
+
+      {/* 转接申请总数统计 */}
+      {transferNotifications.length > 0 && (
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '390px',
+            backgroundColor: '#ff4d4f',
+            color: 'white',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 8px rgba(255,77,79,0.3)',
+            zIndex: 1001,
+            animation: 'pulse 2s infinite'
+          }}
+        >
+          {transferNotifications.length} 个转接申请待处理
+        </div>
+      )}
     </Layout>;
 };
 export default CustomerServiceWorkspace;
