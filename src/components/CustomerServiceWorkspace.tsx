@@ -667,8 +667,8 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                       padding: '0 8px'
                     }}
                     onClick={() => {
-                      // 触发外呼面板打开并自动填入号码
-                      window.dispatchEvent(new CustomEvent('quickCall', { 
+                      // 直接触发呼叫，不显示完整号码
+                      window.dispatchEvent(new CustomEvent('directCall', { 
                         detail: { phone: '13888888888', name: '张小明' }
                       }));
                     }}

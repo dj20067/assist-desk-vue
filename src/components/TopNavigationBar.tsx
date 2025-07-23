@@ -20,16 +20,20 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
   const [callState, setCallState] = useState<CallState>('idle');
   const [quickCallData, setQuickCallData] = useState<{ phone: string; name: string } | null>(null);
 
-  // 监听快捷呼叫事件
+  // 监听直接呼叫事件
   useEffect(() => {
-    const handleQuickCall = (event: CustomEvent) => {
+    const handleDirectCall = (event: CustomEvent) => {
       const { phone, name } = event.detail;
       setQuickCallData({ phone, name });
       setShowOutboundPanel(true);
+      // 延迟一下确保面板打开后再触发呼叫
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('triggerCall', { detail: { phone, name } }));
+      }, 100);
     };
 
-    window.addEventListener('quickCall', handleQuickCall as EventListener);
-    return () => window.removeEventListener('quickCall', handleQuickCall as EventListener);
+    window.addEventListener('directCall', handleDirectCall as EventListener);
+    return () => window.removeEventListener('directCall', handleDirectCall as EventListener);
   }, []);
 
   const handleStatusChange = (value: OnlineStatus) => {

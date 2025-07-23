@@ -100,10 +100,24 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
     return () => window.removeEventListener('shakePanel', handleShake);
   }, []);
 
-  // 处理快捷呼叫数据
+  // 监听直接呼叫触发事件
+  useEffect(() => {
+    const handleTriggerCall = (event: CustomEvent) => {
+      const { phone, name } = event.detail;
+      if (visible) {
+        handleCall(phone, { name, phone } as any);
+      }
+    };
+
+    window.addEventListener('triggerCall', handleTriggerCall as EventListener);
+    return () => window.removeEventListener('triggerCall', handleTriggerCall as EventListener);
+  }, [visible]);
+
+  // 处理快捷呼叫数据（现在不自动填入号码）
   useEffect(() => {
     if (quickCallData && visible) {
-      setPhoneNumber(quickCallData.phone);
+      // 不再自动填入号码，保护隐私
+      // setPhoneNumber(quickCallData.phone);
     }
   }, [quickCallData, visible]);
 
