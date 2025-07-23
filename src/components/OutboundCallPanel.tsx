@@ -189,7 +189,7 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
       <div
         style={{
           height: '50px',
-          backgroundColor: '#1890ff',
+          backgroundColor: callState === 'connected' ? '#52c41a' : '#1890ff',
           color: 'white',
           display: 'flex',
           alignItems: 'center',
