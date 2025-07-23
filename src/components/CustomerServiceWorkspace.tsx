@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
-import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined } from '@ant-design/icons';
+import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined, FileSearchOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { User, Settings, History, Info } from 'lucide-react';
 import { OnlineStatus } from './TopNavigationBar';
 import './CustomerServiceWorkspace.less';
@@ -518,11 +518,12 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           </div>
           <Space>
             <Button icon={<SwapOutlined />} onClick={() => setTransferModalVisible(true)}>转接</Button>
-            <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
+            <Button icon={<FileSearchOutlined />} onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
             <Button icon={<FileTextOutlined />}>
               新建工单
             </Button>
             <Button 
+              icon={<PoweroffOutlined />}
               danger 
               onClick={() => setEndSessionModalVisible(true)}
             >
