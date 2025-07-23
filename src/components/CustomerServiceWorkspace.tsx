@@ -97,6 +97,59 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ]);
 
+  // 历史会话消息数据
+  const historyMessages: Message[] = [
+    {
+      id: 'h1',
+      type: 'text',
+      content: '您好，我遇到了RPA流程配置的问题，能帮我看看吗？',
+      sender: 'user',
+      timestamp: '10:30'
+    },
+    {
+      id: 'h2',
+      type: 'text',
+      content: '您好！我是客服小王，很高兴为您服务。请详细描述一下遇到的问题。',
+      sender: 'agent',
+      timestamp: '10:31'
+    },
+    {
+      id: 'h3',
+      type: 'text',
+      content: '我在执行流程时总是提示"连接超时"错误，已经重试好几次了。',
+      sender: 'user',
+      timestamp: '10:32'
+    },
+    {
+      id: 'h4',
+      type: 'text',
+      content: '我来帮您检查一下系统状态，请稍等片刻。这可能是网络连接或者权限配置的问题。',
+      sender: 'agent',
+      timestamp: '10:33'
+    },
+    {
+      id: 'h5',
+      type: 'text',
+      content: '我查看了您的日志，发现是RPA应用包的权限配置有问题。我已经为您重新配置了权限，请重新尝试执行流程。',
+      sender: 'agent',
+      timestamp: '10:35'
+    },
+    {
+      id: 'h6',
+      type: 'text',
+      content: '太好了！现在可以正常执行了，谢谢您的帮助！',
+      sender: 'user',
+      timestamp: '10:37'
+    },
+    {
+      id: 'h7',
+      type: 'text',
+      content: '问题已经为您解决，如果您还有其他问题，随时联系我们。祝您工作愉快！',
+      sender: 'agent',
+      timestamp: '10:38'
+    }
+  ];
+
   // 常用语数据
   const commonPhrases = [
     {
@@ -705,69 +758,8 @@ const CustomerServiceWorkspace: React.FC = () => {
             <div style={{ marginBottom: 16 }}>
               <Text strong>会话记录：</Text>
             </div>
-            <div className="chat-messages" style={{ maxHeight: 400, overflow: 'auto', padding: 20, borderRadius: 8 }}>
-              <div className={`message message-user`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>您好，我遇到了RPA流程配置的问题，能帮我看看吗？</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:30</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-agent`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>您好！我是客服小王，很高兴为您服务。请详细描述一下遇到的问题。</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:31</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-user`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>我在执行流程时总是提示"连接超时"错误，已经重试好几次了。</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:32</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-agent`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>我来帮您检查一下系统状态，请稍等片刻。这可能是网络连接或者权限配置的问题。</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:33</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-agent`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>我查看了您的日志，发现是RPA应用包的权限配置有问题。我已经为您重新配置了权限，请重新尝试执行流程。</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:35</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-user`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>太好了！现在可以正常执行了，谢谢您的帮助！</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:37</Text>
-                </div>
-              </div>
-              
-              <div className={`message message-agent`}>
-                <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>问题已经为您解决，如果您还有其他问题，随时联系我们。祝您工作愉快！</Text>
-                </div>
-                <div className="message-time">
-                  <Text type="secondary">10:38</Text>
-                </div>
-              </div>
+            <div className="chat-messages" style={{ maxHeight: 400, overflow: 'auto' }}>
+              {historyMessages.map(renderMessage)}
             </div>
           </div>
         )}
