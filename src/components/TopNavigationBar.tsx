@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Button, Select, Space, Typography } from 'antd';
 import { PhoneOutlined } from '@ant-design/icons';
 import OutboundCallPanel from './OutboundCallPanel';
@@ -18,6 +18,19 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
   const [status, setStatus] = useState<OnlineStatus>('online');
   const [showOutboundPanel, setShowOutboundPanel] = useState(false);
   const [callState, setCallState] = useState<CallState>('idle');
+  const [quickCallData, setQuickCallData] = useState<{ phone: string; name: string } | null>(null);
+
+  // 监听快捷呼叫事件
+  useEffect(() => {
+    const handleQuickCall = (event: CustomEvent) => {
+      const { phone, name } = event.detail;
+      setQuickCallData({ phone, name });
+      setShowOutboundPanel(true);
+    };
+
+    window.addEventListener('quickCall', handleQuickCall as EventListener);
+    return () => window.removeEventListener('quickCall', handleQuickCall as EventListener);
+  }, []);
 
   const handleStatusChange = (value: OnlineStatus) => {
     setStatus(value);
@@ -199,8 +212,12 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
       {/* 外呼面板 */}
       <OutboundCallPanel 
         visible={showOutboundPanel}
-        onClose={() => setShowOutboundPanel(false)}
+        onClose={() => {
+          setShowOutboundPanel(false);
+          setQuickCallData(null);
+        }}
         onCallStateChange={setCallState}
+        quickCallData={quickCallData}
       />
       
       {/* CSS 动画样式 */}

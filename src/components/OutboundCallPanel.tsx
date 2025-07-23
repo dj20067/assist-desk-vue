@@ -9,6 +9,7 @@ interface OutboundCallPanelProps {
   onClose: () => void;
   onShake?: () => void;
   onCallStateChange?: (state: 'idle' | 'calling' | 'connected') => void;
+  quickCallData?: { phone: string; name: string } | null;
 }
 
 interface CallHistory {
@@ -21,7 +22,7 @@ interface CallHistory {
   status: 'completed' | 'missed' | 'busy';
 }
 
-const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose, onShake, onCallStateChange }) => {
+const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose, onShake, onCallStateChange, quickCallData }) => {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -98,6 +99,13 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
     window.addEventListener('shakePanel', handleShake);
     return () => window.removeEventListener('shakePanel', handleShake);
   }, []);
+
+  // 处理快捷呼叫数据
+  useEffect(() => {
+    if (quickCallData && visible) {
+      setPhoneNumber(quickCallData.phone);
+    }
+  }, [quickCallData, visible]);
 
   const handleCall = (phone: string, record?: CallHistory) => {
     console.log('拨打电话:', phone);

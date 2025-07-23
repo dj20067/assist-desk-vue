@@ -655,7 +655,27 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
               </div>
               <div className="info-item">
                 <Text type="secondary">电话：</Text>
-                <Text>138****8888</Text>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Text>138****8888</Text>
+                  <Button
+                    type="primary"
+                    size="small"
+                    icon={<PhoneOutlined />}
+                    style={{ 
+                      minWidth: 'auto',
+                      height: '24px',
+                      padding: '0 8px'
+                    }}
+                    onClick={() => {
+                      // 触发外呼面板打开并自动填入号码
+                      window.dispatchEvent(new CustomEvent('quickCall', { 
+                        detail: { phone: '13888888888', name: '张小明' }
+                      }));
+                    }}
+                  >
+                    呼叫
+                  </Button>
+                </div>
               </div>
               <div className="info-item">
                 <Text type="secondary">公司：</Text>
