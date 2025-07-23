@@ -55,6 +55,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
   const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
   const [transferNotifications, setTransferNotifications] = useState<any[]>([]);
   const [notificationExpanded, setNotificationExpanded] = useState<boolean>(false);
+  const [notificationTimers, setNotificationTimers] = useState<{[key: string]: number}>({});
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -132,12 +133,44 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
       
       setTransferNotifications(prev => [...prev, newNotification]);
       
+      // 为新通知设置30秒倒计时
+      setNotificationTimers(prev => ({
+        ...prev,
+        [newNotification.notificationId]: 30
+      }));
+      
       // 播放通知音效
       playNotificationSound();
     }, 10000);
 
     return () => clearInterval(interval);
   }, [onlineStatus]);
+
+  // 30秒自动拒绝转接申请
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNotificationTimers(prev => {
+        const updated = { ...prev };
+        let hasExpired = false;
+        
+        Object.keys(updated).forEach(notificationId => {
+          updated[notificationId] -= 1;
+          if (updated[notificationId] <= 0) {
+            // 自动拒绝转接
+            setTransferNotifications(prevNotifications => 
+              prevNotifications.filter(n => n.notificationId !== notificationId)
+            );
+            delete updated[notificationId];
+            hasExpired = true;
+          }
+        });
+        
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([{
     id: '1',
@@ -391,16 +424,34 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
     const notification = transferNotifications.find(n => n.notificationId === notificationId);
     console.log('接受转接:', notification);
     setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+    // 清除对应的计时器
+    setNotificationTimers(prev => {
+      const updated = { ...prev };
+      delete updated[notificationId];
+      return updated;
+    });
   };
 
   const handleRejectTransfer = (notificationId: string) => {
     const notification = transferNotifications.find(n => n.notificationId === notificationId);
     console.log('拒绝转接:', notification);
     setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+    // 清除对应的计时器
+    setNotificationTimers(prev => {
+      const updated = { ...prev };
+      delete updated[notificationId];
+      return updated;
+    });
   };
 
   const handleCloseNotification = (notificationId: string) => {
     setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+    // 清除对应的计时器
+    setNotificationTimers(prev => {
+      const updated = { ...prev };
+      delete updated[notificationId];
+      return updated;
+    });
   };
   const renderEmojiContent = () => <div style={{
     width: 300,
@@ -1166,10 +1217,24 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                 }}
               >
                 <div style={{ marginBottom: 12 }}>
-                  <Text strong>{notification.fromEngineer}</Text>
-                  <Text type="secondary" style={{ marginLeft: 8 }}>
-                    {notification.waitTime}
-                  </Text>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <Text strong>{notification.fromEngineer}</Text>
+                      <Text type="secondary" style={{ marginLeft: 8 }}>
+                        {notification.waitTime}
+                      </Text>
+                    </div>
+                    <div style={{ 
+                      backgroundColor: '#ff4d4f', 
+                      color: 'white', 
+                      padding: '2px 8px', 
+                      borderRadius: '12px', 
+                      fontSize: '12px',
+                      fontWeight: 'bold'
+                    }}>
+                      {notificationTimers[notification.notificationId] || 30}s
+                    </div>
+                  </div>
                 </div>
                 
                 <div style={{ marginBottom: 8 }}>
