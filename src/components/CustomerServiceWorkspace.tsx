@@ -45,6 +45,11 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string>('');
   const [historyModalVisible, setHistoryModalVisible] = useState<boolean>(false);
   const [serviceSummaryModalVisible, setServiceSummaryModalVisible] = useState<boolean>(false);
+  const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
+  const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
+  const [transferSearchValue, setTransferSearchValue] = useState<string>('');
+  const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
+  const [selectedTransferTarget, setSelectedTransferTarget] = useState<string>('');
   const [serviceSummaryForm, setServiceSummaryForm] = useState({
     problemStatus: '',
     consultType: '',
@@ -269,6 +274,25 @@ const CustomerServiceWorkspace: React.FC = () => {
       solution: ''
     });
   };
+
+  const handleTransferConfirm = () => {
+    console.log('转接到:', selectedTransferTarget);
+    console.log('问题描述:', transferProblemDesc);
+    // 这里可以添加转接逻辑
+    setTransferModalVisible(false);
+    // 重置表单
+    setSelectedTransferTarget('');
+    setTransferProblemDesc('');
+    setTransferSearchValue('');
+  };
+
+  const handleTransferCancel = () => {
+    setTransferModalVisible(false);
+    // 重置表单
+    setSelectedTransferTarget('');
+    setTransferProblemDesc('');
+    setTransferSearchValue('');
+  };
   const renderEmojiContent = () => <div style={{
     width: 300,
     maxHeight: 200,
@@ -385,7 +409,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             </div>
           </div>
           <Space>
-            <Button icon={<SwapOutlined />}>转接</Button>
+            <Button icon={<SwapOutlined />} onClick={() => setTransferModalVisible(true)}>转接</Button>
             <Button icon={<PhoneOutlined />}>外呼</Button>
             <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
             <Button icon={<FileTextOutlined />} type="primary">
@@ -733,6 +757,114 @@ const CustomerServiceWorkspace: React.FC = () => {
             <Space>
               <Button onClick={handleServiceSummaryCancel}>取消</Button>
               <Button type="primary" onClick={handleServiceSummarySave}>保存</Button>
+            </Space>
+          </div>
+        </div>
+      </Modal>
+
+      {/* 会话转接模态窗口 */}
+      <Modal 
+        title="会话转接" 
+        open={transferModalVisible} 
+        onCancel={handleTransferCancel}
+        footer={null}
+        width={800}
+      >
+        <div style={{ padding: '16px 0' }}>
+          <Tabs activeKey={transferActiveTab} onChange={setTransferActiveTab} style={{ marginBottom: 24 }}>
+            <TabPane tab="客服" key="customer-service">
+              <div style={{ marginBottom: 16 }}>
+                <Input 
+                  placeholder="历史转接人" 
+                  disabled 
+                  value="没有可转接的客服"
+                  style={{ marginBottom: 16, color: '#999' }}
+                />
+                <Input 
+                  placeholder="请输入客服姓名或昵称" 
+                  value={transferSearchValue}
+                  onChange={(e) => setTransferSearchValue(e.target.value)}
+                  prefix={<SearchOutlined />}
+                  style={{ marginBottom: 16 }}
+                />
+                <div style={{ 
+                  border: '1px solid #f0f0f0', 
+                  borderRadius: 6, 
+                  padding: 16, 
+                  minHeight: 200,
+                  backgroundColor: '#fafafa'
+                }}>
+                  <List
+                    size="small"
+                    dataSource={[
+                      { id: '1', name: '胡子场控专用(...)', status: '(0/0)', online: false },
+                      { id: '2', name: '西南(西南)', status: '(1/1)', online: true },
+                      { id: '3', name: '拉拉(拉拉)', status: '(1/1)', online: true },
+                      { id: '4', name: '柿子(柿子)', status: '(1/0)', online: true },
+                      { id: '5', name: '昕风(昕风)', status: '(1/0)', online: true },
+                    ].filter(item => 
+                      !transferSearchValue || 
+                      item.name.toLowerCase().includes(transferSearchValue.toLowerCase())
+                    )}
+                    renderItem={(item) => (
+                      <List.Item
+                        style={{
+                          cursor: 'pointer',
+                          padding: '8px 12px',
+                          borderRadius: 4,
+                          marginBottom: 4,
+                          backgroundColor: selectedTransferTarget === item.id ? '#e6f7ff' : 'white',
+                          border: selectedTransferTarget === item.id ? '1px solid #40a9ff' : '1px solid #f0f0f0'
+                        }}
+                        onClick={() => setSelectedTransferTarget(item.id)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <Badge status={item.online ? "success" : "default"} />
+                          <Text>{item.name}</Text>
+                          <Text type="secondary">{item.status}</Text>
+                          {item.online && <Tag color="red">🔴</Tag>}
+                        </div>
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tab="客服组" key="customer-service-group">
+              <div style={{ 
+                border: '1px solid #f0f0f0', 
+                borderRadius: 6, 
+                padding: 16, 
+                minHeight: 200,
+                backgroundColor: '#fafafa',
+                textAlign: 'center',
+                color: '#999'
+              }}>
+                暂无客服组数据
+              </div>
+            </TabPane>
+          </Tabs>
+
+          <div style={{ marginBottom: 24 }}>
+            <Text strong style={{ display: 'block', marginBottom: 8 }}>请简要概括客户问题</Text>
+            <TextArea
+              rows={6}
+              placeholder="请简要概括客户问题..."
+              value={transferProblemDesc}
+              onChange={(e) => setTransferProblemDesc(e.target.value)}
+            />
+          </div>
+
+          <div style={{ textAlign: 'right', borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
+            <Space>
+              <Button onClick={handleTransferCancel}>取消</Button>
+              <Button 
+                type="primary" 
+                onClick={handleTransferConfirm}
+                disabled={!selectedTransferTarget}
+              >
+                确定
+              </Button>
             </Space>
           </div>
         </div>
