@@ -47,8 +47,7 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [serviceSummaryModalVisible, setServiceSummaryModalVisible] = useState<boolean>(false);
   const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
   const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
-  const [transferNotificationVisible, setTransferNotificationVisible] = useState<boolean>(false);
-  const [currentTransferRequest, setCurrentTransferRequest] = useState<any>(null);
+  const [transferNotifications, setTransferNotifications] = useState<any[]>([]);
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -113,8 +112,13 @@ const CustomerServiceWorkspace: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const randomRequest = transferRequests[Math.floor(Math.random() * transferRequests.length)];
-      setCurrentTransferRequest(randomRequest);
-      setTransferNotificationVisible(true);
+      const newNotification = {
+        ...randomRequest,
+        notificationId: Date.now().toString(),
+        timestamp: new Date()
+      };
+      
+      setTransferNotifications(prev => [...prev, newNotification]);
       
       // 播放通知音效
       playNotificationSound();
@@ -371,16 +375,20 @@ const CustomerServiceWorkspace: React.FC = () => {
     setEndSessionModalVisible(false);
   };
 
-  const handleAcceptTransfer = () => {
-    console.log('接受转接:', currentTransferRequest);
-    setTransferNotificationVisible(false);
-    setCurrentTransferRequest(null);
+  const handleAcceptTransfer = (notificationId: string) => {
+    const notification = transferNotifications.find(n => n.notificationId === notificationId);
+    console.log('接受转接:', notification);
+    setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
   };
 
-  const handleRejectTransfer = () => {
-    console.log('拒绝转接:', currentTransferRequest);
-    setTransferNotificationVisible(false);
-    setCurrentTransferRequest(null);
+  const handleRejectTransfer = (notificationId: string) => {
+    const notification = transferNotifications.find(n => n.notificationId === notificationId);
+    console.log('拒绝转接:', notification);
+    setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+  };
+
+  const handleCloseNotification = (notificationId: string) => {
+    setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
   };
   const renderEmojiContent = () => <div style={{
     width: 300,
@@ -985,20 +993,23 @@ const CustomerServiceWorkspace: React.FC = () => {
         </div>
       </Modal>
 
-      {/* 转接申请通知弹窗 */}
-      {transferNotificationVisible && currentTransferRequest && (
+      {/* 转接申请通知弹窗 - 支持多个通知叠加 */}
+      {transferNotifications.map((notification, index) => (
         <div 
+          key={notification.notificationId}
           style={{
             position: 'fixed',
-            bottom: '20px',
-            right: '20px',
+            bottom: `${20 + index * 10}px`,
+            right: `${20 + index * 10}px`,
             width: '350px',
             backgroundColor: 'white',
             borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            boxShadow: `0 ${4 + index * 2}px ${12 + index * 4}px rgba(0,0,0,${0.15 + index * 0.05})`,
             border: '1px solid #d9d9d9',
-            zIndex: 1000,
-            animation: 'fadeInUp 0.3s ease-out'
+            zIndex: 1000 - index,
+            animation: 'fadeInUp 0.3s ease-out',
+            transform: `rotate(${index * 2}deg)`,
+            transformOrigin: 'bottom right'
           }}
         >
           <div style={{ 
@@ -1012,7 +1023,7 @@ const CustomerServiceWorkspace: React.FC = () => {
               <Button 
                 type="text" 
                 size="small" 
-                onClick={() => setTransferNotificationVisible(false)}
+                onClick={() => handleCloseNotification(notification.notificationId)}
                 style={{ padding: 0, minWidth: 'auto' }}
               >
                 ×
@@ -1022,35 +1033,35 @@ const CustomerServiceWorkspace: React.FC = () => {
           
           <div style={{ padding: '16px' }}>
             <div style={{ marginBottom: 12 }}>
-              <Text strong>{currentTransferRequest.fromEngineer}</Text>
+              <Text strong>{notification.fromEngineer}</Text>
               <Text type="secondary" style={{ marginLeft: 8 }}>
-                {currentTransferRequest.waitTime}
+                {notification.waitTime}
               </Text>
             </div>
             
             <div style={{ marginBottom: 8 }}>
               <Text type="secondary">客户：</Text>
-              <Text>{currentTransferRequest.customer}</Text>
+              <Text>{notification.customer}</Text>
             </div>
             
             <div style={{ marginBottom: 16 }}>
               <Text type="secondary">原因：</Text>
               <div style={{ marginTop: 4 }}>
-                <Text>{currentTransferRequest.reason}</Text>
+                <Text>{notification.reason}</Text>
               </div>
             </div>
             
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button size="small" onClick={handleRejectTransfer}>
+              <Button size="small" onClick={() => handleRejectTransfer(notification.notificationId)}>
                 拒绝
               </Button>
-              <Button type="primary" size="small" onClick={handleAcceptTransfer}>
+              <Button type="primary" size="small" onClick={() => handleAcceptTransfer(notification.notificationId)}>
                 接受
               </Button>
             </div>
           </div>
         </div>
-      )}
+      ))}
     </Layout>;
 };
 export default CustomerServiceWorkspace;
