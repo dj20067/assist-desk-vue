@@ -232,6 +232,13 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   // 插入常用语到输入框
   const handleSelectPhrase = (phrase: string) => {
     const newMessage = inputMessage ? `${inputMessage}\n${phrase}` : phrase;
@@ -469,7 +476,7 @@ const CustomerServiceWorkspace: React.FC = () => {
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="请输入消息..."
               autoSize={{ minRows: 2, maxRows: 4 }}
-              onPressEnter={handleSendMessage}
+              onKeyDown={handleKeyDown}
             />
             <Button
               type="primary"
