@@ -9,12 +9,14 @@ interface OutboundCallPanelProps {
   onClose: () => void;
 }
 
-interface Contact {
+interface CallHistory {
   id: string;
   name: string;
   phone: string;
-  status: 'available' | 'busy' | 'offline';
-  avatar?: string;
+  callTime: string;
+  duration: string;
+  type: 'outbound' | 'inbound';
+  status: 'completed' | 'missed' | 'busy';
 }
 
 const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose }) => {
@@ -29,16 +31,17 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
   const [callDuration, setCallDuration] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // 模拟联系人数据
-  const contacts: Contact[] = [
-    { id: '1', name: '张小明', phone: '138****8888', status: 'available', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1' },
-    { id: '2', name: '李小红', phone: '139****9999', status: 'busy', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2' },
-    { id: '3', name: '王小华', phone: '137****7777', status: 'offline', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3' },
-    { id: '4', name: '陈小强', phone: '136****6666', status: 'available', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4' },
+  // 模拟历史通话记录数据
+  const callHistory: CallHistory[] = [
+    { id: '1', name: '张小明', phone: '138****8888', callTime: '2024-01-22 14:30', duration: '5分30秒', type: 'outbound', status: 'completed' },
+    { id: '2', name: '李小红', phone: '139****9999', callTime: '2024-01-22 11:15', duration: '2分45秒', type: 'inbound', status: 'completed' },
+    { id: '3', name: '王小华', phone: '137****7777', callTime: '2024-01-22 09:20', duration: '-', type: 'outbound', status: 'missed' },
+    { id: '4', name: '陈小强', phone: '136****6666', callTime: '2024-01-21 16:45', duration: '8分12秒', type: 'outbound', status: 'completed' },
+    { id: '5', name: '刘小美', phone: '135****5555', callTime: '2024-01-21 13:30', duration: '-', type: 'inbound', status: 'busy' },
   ];
 
-  const filteredContacts = contacts.filter(contact => 
-    contact.name.includes(searchValue) || contact.phone.includes(searchValue)
+  const filteredHistory = callHistory.filter(record => 
+    record.name.includes(searchValue) || record.phone.includes(searchValue)
   );
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -77,10 +80,10 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
     };
   }, [isDragging, dragOffset]);
 
-  const handleCall = (phone: string, contact?: Contact) => {
+  const handleCall = (phone: string, record?: CallHistory) => {
     console.log('拨打电话:', phone);
     setCurrentCall({
-      name: contact?.name,
+      name: record?.name,
       phone: phone
     });
     setCallState('calling');
@@ -115,20 +118,28 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available': return '#52c41a';
-      case 'busy': return '#faad14';
-      case 'offline': return '#d9d9d9';
+  const getCallTypeColor = (type: string) => {
+    switch (type) {
+      case 'outbound': return '#1890ff';
+      case 'inbound': return '#52c41a';
       default: return '#d9d9d9';
     }
   };
 
-  const getStatusText = (status: string) => {
+  const getCallStatusColor = (status: string) => {
     switch (status) {
-      case 'available': return '可用';
-      case 'busy': return '忙碌';
-      case 'offline': return '离线';
+      case 'completed': return '#52c41a';
+      case 'missed': return '#ff4d4f';
+      case 'busy': return '#faad14';
+      default: return '#d9d9d9';
+    }
+  };
+
+  const getCallStatusText = (status: string) => {
+    switch (status) {
+      case 'completed': return '已完成';
+      case 'missed': return '未接听';
+      case 'busy': return '忙线';
       default: return '未知';
     }
   };
@@ -223,11 +234,11 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
 
               <Divider />
 
-              {/* 联系人列表 */}
+              {/* 历史通话记录 */}
               <div>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>联系人</Text>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>历史通话记录</Text>
                 <Input
-                  placeholder="搜索联系人..."
+                  placeholder="搜索通话记录..."
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   style={{ marginBottom: 12 }}
@@ -235,8 +246,8 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
                 
                 <List
                   size="small"
-                  dataSource={filteredContacts}
-                  renderItem={(contact) => (
+                  dataSource={filteredHistory}
+                  renderItem={(record) => (
                     <List.Item
                       style={{
                         padding: '8px 0',
@@ -248,26 +259,28 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
                           type="primary"
                           size="small"
                           icon={<PhoneOutlined />}
-                          onClick={() => handleCall(contact.phone, contact)}
-                          disabled={contact.status === 'offline'}
+                          onClick={() => handleCall(record.phone, record)}
                         >
-                          拨打
+                          回拨
                         </Button>
                       ]}
                     >
                       <List.Item.Meta
                         avatar={
-                          contact.avatar ? (
-                            <Avatar src={contact.avatar} size="small" />
-                          ) : (
-                            <Avatar icon={<UserOutlined />} size="small" />
-                          )
+                          <Avatar 
+                            style={{ 
+                              backgroundColor: getCallTypeColor(record.type),
+                              fontSize: '12px'
+                            }}
+                          >
+                            {record.type === 'outbound' ? '出' : '入'}
+                          </Avatar>
                         }
                         title={
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Text strong style={{ fontSize: '14px' }}>{contact.name}</Text>
+                            <Text strong style={{ fontSize: '14px' }}>{record.name}</Text>
                             <Tag
-                              color={getStatusColor(contact.status)}
+                              color={getCallStatusColor(record.status)}
                               style={{ 
                                 fontSize: '12px', 
                                 padding: '2px 6px',
@@ -275,14 +288,19 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
                                 height: 'auto'
                               }}
                             >
-                              {getStatusText(contact.status)}
+                              {getCallStatusText(record.status)}
                             </Tag>
                           </div>
                         }
                         description={
-                          <Text type="secondary" style={{ fontSize: '12px' }}>
-                            {contact.phone}
-                          </Text>
+                          <div>
+                            <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>
+                              {record.phone}
+                            </Text>
+                            <Text type="secondary" style={{ fontSize: '11px' }}>
+                              {record.callTime} · {record.duration}
+                            </Text>
+                          </div>
                         }
                       />
                     </List.Item>
@@ -303,7 +321,7 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
               {/* 联系人头像 */}
               <Avatar 
                 size={80} 
-                src={currentCall?.name ? filteredContacts.find(c => c.name === currentCall.name)?.avatar : undefined}
+                src={currentCall?.name ? callHistory.find(r => r.name === currentCall.name)?.name : undefined}
                 icon={<UserOutlined />}
                 style={{ marginBottom: 16 }}
               />
