@@ -622,11 +622,62 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
           >
             <div className="app-logs">
               <Title level={5}>RPA应用包</Title>
-              <List size="small" dataSource={['财务报表自动化', '数据采集流程', '邮件处理机器人']} renderItem={item => <List.Item>
-                    <Button type="link" size="small">
-                      {item}
-                    </Button>
-                  </List.Item>} />
+              <List 
+                size="small" 
+                dataSource={[
+                  { name: '财务报表自动化', topic: '816837894440828928' },
+                  { name: '数据采集流程', topic: '817228490332155904' },
+                  { name: '邮件处理机器人', topic: '817659086224482816' }
+                ]} 
+                renderItem={item => (
+                  <List.Item style={{ padding: 0 }}>
+                    <div 
+                      className="app-item"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        border: '1px solid transparent'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f0f8ff';
+                        e.currentTarget.style.borderColor = '#1890ff';
+                        e.currentTarget.style.transform = 'translateX(2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.borderColor = 'transparent';
+                        e.currentTarget.style.transform = 'translateX(0)';
+                      }}
+                      onClick={() => {
+                        window.open(`shadowbot:Homework?topic-uuid=${item.topic}&model=0`, '_blank');
+                      }}
+                    >
+                      <div 
+                        style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          backgroundColor: '#52c41a',
+                          flexShrink: 0
+                        }}
+                      />
+                      <Text style={{ 
+                        color: '#1890ff', 
+                        fontWeight: 500,
+                        fontSize: '13px'
+                      }}>
+                        {item.name}
+                      </Text>
+                    </div>
+                  </List.Item>
+                )} 
+              />
               
               <Divider />
               
