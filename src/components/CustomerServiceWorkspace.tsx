@@ -54,6 +54,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
   const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
   const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
   const [transferNotifications, setTransferNotifications] = useState<any[]>([]);
+  const [notificationExpanded, setNotificationExpanded] = useState<boolean>(false);
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -1092,37 +1093,57 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
         </div>
       </Modal>
 
-      {/* 转接申请通知弹窗 - 支持多个通知叠加 */}
-      {transferNotifications.map((notification, index) => (
+      {/* 转接申请通知弹窗 - 可展开查看所有通知 */}
+      {transferNotifications.length > 0 && (
         <div 
-          key={notification.notificationId}
           style={{
             position: 'fixed',
-            bottom: `${20 + index * 10}px`,
-            right: `${20 + index * 10}px`,
-            width: '350px',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 1000,
             backgroundColor: 'white',
             borderRadius: '8px',
-            boxShadow: `0 ${4 + index * 2}px ${12 + index * 4}px rgba(0,0,0,${0.15 + index * 0.05})`,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             border: '1px solid #d9d9d9',
-            zIndex: 1000 - index,
-            animation: 'fadeInUp 0.3s ease-out',
-            transform: `rotate(${index * 2}deg)`,
-            transformOrigin: 'bottom right'
+            minWidth: '350px',
+            maxWidth: '400px',
+            animation: 'fadeInUp 0.3s ease-out'
           }}
         >
+          {/* 通知头部 */}
           <div style={{ 
-            padding: '16px',
+            padding: '12px 16px',
             borderBottom: '1px solid #f0f0f0',
             backgroundColor: '#fafafa',
-            borderRadius: '8px 8px 0 0'
+            borderRadius: '8px 8px 0 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Text strong style={{ color: '#1890ff' }}>转接申请</Text>
+              {transferNotifications.length > 1 && (
+                <Badge 
+                  count={transferNotifications.length} 
+                  style={{ backgroundColor: '#ff4d4f' }}
+                />
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              {transferNotifications.length > 1 && (
+                <Button 
+                  type="text" 
+                  size="small"
+                  onClick={() => setNotificationExpanded(!notificationExpanded)}
+                  style={{ padding: '2px 6px', fontSize: '12px' }}
+                >
+                  {notificationExpanded ? '收起' : '展开'}
+                </Button>
+              )}
               <Button 
                 type="text" 
                 size="small" 
-                onClick={() => handleCloseNotification(notification.notificationId)}
+                onClick={() => setTransferNotifications([])}
                 style={{ padding: 0, minWidth: 'auto' }}
               >
                 ×
@@ -1130,37 +1151,93 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
             </div>
           </div>
           
-          <div style={{ padding: '16px' }}>
-            <div style={{ marginBottom: 12 }}>
-              <Text strong>{notification.fromEngineer}</Text>
-              <Text type="secondary" style={{ marginLeft: 8 }}>
-                {notification.waitTime}
-              </Text>
-            </div>
-            
-            <div style={{ marginBottom: 8 }}>
-              <Text type="secondary">客户：</Text>
-              <Text>{notification.customer}</Text>
-            </div>
-            
-            <div style={{ marginBottom: 16 }}>
-              <Text type="secondary">原因：</Text>
-              <div style={{ marginTop: 4 }}>
-                <Text>{notification.reason}</Text>
+          {/* 通知内容区域 */}
+          <div style={{ 
+            maxHeight: notificationExpanded ? '400px' : 'auto',
+            overflowY: 'auto'
+          }}>
+            {(notificationExpanded ? transferNotifications : transferNotifications.slice(0, 1)).map((notification, index) => (
+              <div 
+                key={notification.notificationId}
+                style={{ 
+                  padding: '16px',
+                  borderBottom: index < transferNotifications.length - 1 ? '1px solid #f0f0f0' : 'none',
+                  backgroundColor: index === 0 && !notificationExpanded ? 'white' : '#fafafa'
+                }}
+              >
+                <div style={{ marginBottom: 12 }}>
+                  <Text strong>{notification.fromEngineer}</Text>
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {notification.waitTime}
+                  </Text>
+                </div>
+                
+                <div style={{ marginBottom: 8 }}>
+                  <Text type="secondary">客户：</Text>
+                  <Text>{notification.customer}</Text>
+                </div>
+                
+                <div style={{ marginBottom: 16 }}>
+                  <Text type="secondary">原因：</Text>
+                  <div style={{ marginTop: 4 }}>
+                    <Text style={{ fontSize: '13px' }}>{notification.reason}</Text>
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <Button 
+                    size="small" 
+                    onClick={() => handleRejectTransfer(notification.notificationId)}
+                  >
+                    拒绝
+                  </Button>
+                  <Button 
+                    type="primary" 
+                    size="small" 
+                    onClick={() => handleAcceptTransfer(notification.notificationId)}
+                  >
+                    接受
+                  </Button>
+                </div>
               </div>
-            </div>
+            ))}
             
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button size="small" onClick={() => handleRejectTransfer(notification.notificationId)}>
-                拒绝
-              </Button>
-              <Button type="primary" size="small" onClick={() => handleAcceptTransfer(notification.notificationId)}>
-                接受
-              </Button>
-            </div>
+            {/* 折叠状态下显示其他通知数量 */}
+            {!notificationExpanded && transferNotifications.length > 1 && (
+              <div 
+                style={{
+                  padding: '12px 16px',
+                  backgroundColor: '#f8f9fa',
+                  borderTop: '1px solid #f0f0f0',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+                onClick={() => setNotificationExpanded(true)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e9ecef';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8f9fa';
+                }}
+              >
+                <Text 
+                  type="secondary" 
+                  style={{ 
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 4
+                  }}
+                >
+                  还有 {transferNotifications.length - 1} 个转接申请
+                  <span style={{ fontSize: '10px' }}>▼</span>
+                </Text>
+              </div>
+            )}
           </div>
         </div>
-      ))}
+      )}
     </Layout>;
 };
 export default CustomerServiceWorkspace;
