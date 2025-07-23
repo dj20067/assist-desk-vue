@@ -66,6 +66,8 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('waiting');
   const [inputMessage, setInputMessage] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
+  const [historyModalVisible, setHistoryModalVisible] = useState<boolean>(false);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -246,6 +248,50 @@ const CustomerServiceWorkspace: React.FC = () => {
   const handleSelectEmoji = (emoji: string) => {
     const newMessage = inputMessage + emoji;
     setInputMessage(newMessage);
+  };
+
+  const handleHistoryItemClick = (item: any) => {
+    setSelectedHistoryItem({
+      ...item,
+      messages: [
+        {
+          id: '1',
+          type: 'text',
+          content: item.summary,
+          sender: 'user',
+          timestamp: '09:15'
+        },
+        {
+          id: '2',
+          type: 'text',
+          content: '我来帮您查看一下这个问题。',
+          sender: 'agent',
+          timestamp: '09:16'
+        },
+        {
+          id: '3',
+          type: 'text',
+          content: '好的，我需要重新配置一下流程参数。',
+          sender: 'user',
+          timestamp: '09:20'
+        },
+        {
+          id: '4',
+          type: 'text',
+          content: '已为您处理完成，请检查流程是否正常运行。',
+          sender: 'agent',
+          timestamp: '09:25'
+        },
+        {
+          id: '5',
+          type: 'text',
+          content: '测试正常，谢谢您的帮助！',
+          sender: 'user',
+          timestamp: '09:30'
+        }
+      ]
+    });
+    setHistoryModalVisible(true);
   };
 
   const renderEmojiContent = () => (
@@ -586,7 +632,11 @@ const CustomerServiceWorkspace: React.FC = () => {
                 ]}
                 renderItem={(item) => (
                   <List.Item>
-                    <div className="history-item">
+                    <div 
+                      className="history-item" 
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleHistoryItemClick(item)}
+                    >
                       <div className="history-date">
                         <Text type="secondary">{item.date}</Text>
                       </div>
@@ -671,6 +721,43 @@ const CustomerServiceWorkspace: React.FC = () => {
           </Panel>
         </Collapse>
       </Sider>
+
+      {/* 历史会话详情模态框 */}
+      <Modal
+        title={
+          <div>
+            <Text strong>历史会话详情</Text>
+            <div style={{ marginTop: 8 }}>
+              <Text type="secondary">日期: {selectedHistoryItem?.date}</Text>
+              <span style={{ margin: '0 8px' }}>|</span>
+              <Tag color="green">{selectedHistoryItem?.status}</Tag>
+            </div>
+          </div>
+        }
+        visible={historyModalVisible}
+        onCancel={() => setHistoryModalVisible(false)}
+        footer={null}
+        width={600}
+        bodyStyle={{ height: '400px', overflow: 'auto' }}
+      >
+        {selectedHistoryItem && (
+          <div className="history-messages">
+            {selectedHistoryItem.messages?.map((message: Message) => (
+              <div
+                key={message.id}
+                className={`message ${message.sender === 'user' ? 'message-user' : 'message-agent'}`}
+              >
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>{message.content}</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">{message.timestamp}</Text>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal>
     </Layout>
   );
 };
