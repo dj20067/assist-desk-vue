@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Button, Select, Space, Typography } from 'antd';
 import { PhoneOutlined } from '@ant-design/icons';
+import './TopNavigationBar.css';
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -57,23 +58,34 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
         height: '56px',
         position: 'sticky',
         top: 0,
-        zIndex: 1000
+        zIndex: 1000,
+        boxSizing: 'border-box'
       }}
     >
-      <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#1890ff' }}>
+      <div style={{ 
+        fontSize: '18px', 
+        fontWeight: 'bold', 
+        color: '#1890ff',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      }}>
         客服工作台
       </div>
       
-      <Space size="large">
+      <Space size="large" style={{ flexShrink: 0 }}>
         <Button 
           icon={<PhoneOutlined />} 
           type="primary"
+          size="small"
+          style={{ minWidth: 'auto' }}
+          className="outbound-call-btn"
         >
-          外呼
+          <span className="btn-text">外呼</span>
         </Button>
         
-        <Space align="center">
-          <Text style={{ marginRight: 8 }}>状态：</Text>
+        <Space align="center" style={{ whiteSpace: 'nowrap' }}>
+          <Text style={{ marginRight: 8, fontSize: '14px' }}>状态：</Text>
           <Select
             value={status}
             onChange={handleStatusChange}

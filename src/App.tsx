@@ -26,7 +26,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout style={{ minHeight: '100vh', height: '100vh', overflow: 'hidden' }}>
               <TopNavigationBar onStatusChange={handleStatusChange} />
               <Routes>
                 <Route path="/" element={<Index onlineStatus={onlineStatus} />} />

@@ -1,0 +1,56 @@
+/* TopNavigationBar responsive styles */
+.outbound-call-btn .btn-text {
+  display: inline;
+}
+
+/* 移动端响应式调整 */
+@media (max-width: 992px) {
+  .ant-layout-header {
+    padding: 0 16px !important;
+  }
+  
+  .outbound-call-btn {
+    padding: 4px 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ant-layout-header {
+    padding: 0 12px !important;
+  }
+  
+  .outbound-call-btn {
+    padding: 4px 8px !important;
+  }
+  
+  .outbound-call-btn .btn-text {
+    display: none;
+  }
+  
+  .ant-space-large {
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ant-layout-header {
+    padding: 0 8px !important;
+  }
+  
+  .ant-layout-header > div:first-child {
+    font-size: 16px !important;
+  }
+  
+  .outbound-call-btn {
+    padding: 2px 6px !important;
+    min-width: 32px !important;
+  }
+  
+  .ant-select-small {
+    width: 80px !important;
+  }
+  
+  .ant-space-large {
+    gap: 4px !important;
+  }
+}
