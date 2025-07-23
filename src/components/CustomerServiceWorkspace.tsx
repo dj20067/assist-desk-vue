@@ -552,7 +552,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
             </Space>
           </div>
           <div className="input-area">
-            <TextArea value={inputMessage} onChange={e => setInputMessage(e.target.value)} placeholder="请输入消息..." autoSize={{
+            <TextArea value={inputMessage} onChange={e => setInputMessage(e.target.value)} placeholder="请输入消息... (Enter发送，Shift+Enter换行)" autoSize={{
             minRows: 2,
             maxRows: 4
           }} onKeyDown={handleKeyDown} />
