@@ -7,6 +7,7 @@ const { Text } = Typography;
 interface OutboundCallPanelProps {
   visible: boolean;
   onClose: () => void;
+  onShake?: () => void;
 }
 
 interface CallHistory {
@@ -19,7 +20,7 @@ interface CallHistory {
   status: 'completed' | 'missed' | 'busy';
 }
 
-const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose }) => {
+const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose, onShake }) => {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -29,6 +30,7 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
   const [callState, setCallState] = useState<'idle' | 'calling' | 'connected'>('idle');
   const [currentCall, setCurrentCall] = useState<{ name?: string; phone: string } | null>(null);
   const [callDuration, setCallDuration] = useState(0);
+  const [isShaking, setIsShaking] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // 模拟历史通话记录数据
@@ -79,6 +81,20 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging, dragOffset]);
+
+  // 处理摇晃动画
+  useEffect(() => {
+    if (onShake) {
+      const handleShake = () => {
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 600);
+      };
+      
+      // 监听父组件触发的摇晃
+      window.addEventListener('shakePanel', handleShake);
+      return () => window.removeEventListener('shakePanel', handleShake);
+    }
+  }, [onShake]);
 
   const handleCall = (phone: string, record?: CallHistory) => {
     console.log('拨打电话:', phone);
@@ -162,7 +178,8 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
         zIndex: 2000,
         userSelect: 'none',
         overflow: 'hidden',
-        transition: 'height 0.3s ease'
+        transition: 'height 0.3s ease',
+        animation: isShaking ? 'shake 0.6s ease-in-out' : 'none'
       }}
     >
       {/* 标题栏 */}
@@ -382,6 +399,15 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
           )}
         </div>
       )}
+      
+      {/* CSS 动画样式 */}
+      <style>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+          20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+      `}</style>
     </div>
   );
 };

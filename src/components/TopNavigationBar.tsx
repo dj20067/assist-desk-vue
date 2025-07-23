@@ -82,7 +82,15 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
           size="small"
           style={{ minWidth: 'auto' }}
           className="outbound-call-btn"
-          onClick={() => setShowOutboundPanel(true)}
+          onClick={() => {
+            if (showOutboundPanel) {
+              // 如果面板已显示，触发摇晃动画
+              window.dispatchEvent(new Event('shakePanel'));
+            } else {
+              // 如果面板未显示，打开面板
+              setShowOutboundPanel(true);
+            }
+          }}
         >
           <span className="btn-text">外呼</span>
         </Button>
