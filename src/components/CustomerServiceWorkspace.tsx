@@ -993,21 +993,23 @@ const CustomerServiceWorkspace: React.FC = () => {
         </div>
       </Modal>
 
-      {/* 转接申请通知弹窗 - 只有一个时显示详细通知 */}
-      {transferNotifications.length === 1 && transferNotifications.map((notification, index) => (
+      {/* 转接申请通知弹窗 - 支持多个通知叠加 */}
+      {transferNotifications.map((notification, index) => (
         <div 
           key={notification.notificationId}
           style={{
             position: 'fixed',
-            bottom: '20px',
-            right: '20px',
+            bottom: `${20 + index * 10}px`,
+            right: `${20 + index * 10}px`,
             width: '350px',
             backgroundColor: 'white',
             borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            boxShadow: `0 ${4 + index * 2}px ${12 + index * 4}px rgba(0,0,0,${0.15 + index * 0.05})`,
             border: '1px solid #d9d9d9',
-            zIndex: 1000,
-            animation: 'fadeInUp 0.3s ease-out'
+            zIndex: 1000 - index,
+            animation: 'fadeInUp 0.3s ease-out',
+            transform: `rotate(${index * 2}deg)`,
+            transformOrigin: 'bottom right'
           }}
         >
           <div style={{ 
@@ -1060,81 +1062,6 @@ const CustomerServiceWorkspace: React.FC = () => {
           </div>
         </div>
       ))}
-
-      {/* 转接申请统计标签 - 多个时显示，悬停展示折叠卡片 */}
-      {transferNotifications.length > 1 && (
-        <Tooltip
-          title={
-            <div style={{ maxWidth: '400px' }}>
-              {transferNotifications.map((notification, index) => (
-                <div 
-                  key={notification.notificationId}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '6px',
-                    padding: '12px',
-                    marginBottom: index < transferNotifications.length - 1 ? '8px' : '0',
-                    border: '1px solid #f0f0f0',
-                    color: '#333'
-                  }}
-                >
-                  <div style={{ marginBottom: 8 }}>
-                    <Text strong style={{ color: '#1890ff' }}>{notification.fromEngineer}</Text>
-                    <Text type="secondary" style={{ marginLeft: 8, fontSize: '12px' }}>
-                      {notification.waitTime}
-                    </Text>
-                  </div>
-                  
-                  <div style={{ marginBottom: 6 }}>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>客户：</Text>
-                    <Text style={{ fontSize: '12px' }}>{notification.customer}</Text>
-                  </div>
-                  
-                  <div style={{ marginBottom: 8 }}>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>原因：</Text>
-                    <div style={{ marginTop: 2 }}>
-                      <Text style={{ fontSize: '12px' }}>{notification.reason}</Text>
-                    </div>
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                    <Button size="small" onClick={() => handleRejectTransfer(notification.notificationId)}>
-                      拒绝
-                    </Button>
-                    <Button type="primary" size="small" onClick={() => handleAcceptTransfer(notification.notificationId)}>
-                      接受
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          }
-          trigger="hover"
-          placement="top"
-          overlayStyle={{ zIndex: 1002 }}
-        >
-          <div 
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              right: '20px',
-              backgroundColor: '#ff4d4f',
-              color: 'white',
-              borderRadius: '20px',
-              padding: '12px 20px',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              boxShadow: '0 4px 12px rgba(255,77,79,0.3)',
-              zIndex: 1001,
-              animation: 'pulse 2s infinite',
-              cursor: 'pointer',
-              userSelect: 'none'
-            }}
-          >
-            {transferNotifications.length} 个转接申请待处理
-          </div>
-        </Tooltip>
-      )}
     </Layout>;
 };
 export default CustomerServiceWorkspace;
