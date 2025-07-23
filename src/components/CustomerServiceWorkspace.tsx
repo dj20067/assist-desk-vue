@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
 import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined } from '@ant-design/icons';
+import { User, Settings, History, Info } from 'lucide-react';
 import { OnlineStatus } from './TopNavigationBar';
 import './CustomerServiceWorkspace.less';
 const {
@@ -559,7 +560,15 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
       {/* 右侧信息区 */}
       <Sider width="30%" className="info-sidebar">
         <Collapse defaultActiveKey={['customer', 'app', 'history', 'moreInfo']} ghost>
-          <Panel header="客户信息" key="customer">
+          <Panel 
+            header={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <User size={16} color="#1890ff" />
+                <span>客户信息</span>
+              </div>
+            } 
+            key="customer"
+          >
             <div className="customer-info">
               <div className="info-item">
                 <Text type="secondary">姓名：</Text>
@@ -596,7 +605,15 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
             </div>
           </Panel>
 
-          <Panel header="应用与日志" key="app">
+          <Panel 
+            header={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Settings size={16} color="#52c41a" />
+                <span>应用与日志</span>
+              </div>
+            } 
+            key="app"
+          >
             <div className="app-logs">
               <Title level={5}>RPA应用包</Title>
               <List size="small" dataSource={['财务报表自动化', '数据采集流程', '邮件处理机器人']} renderItem={item => <List.Item>
@@ -654,7 +671,15 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
             </div>
           </Panel>
 
-          <Panel header="服务历史" key="history">
+          <Panel 
+            header={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <History size={16} color="#faad14" />
+                <span>服务历史</span>
+              </div>
+            } 
+            key="history"
+          >
             <div className="service-history">
               <List size="small" dataSource={[{
               date: '2024-01-15',
@@ -680,7 +705,15 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
             </div>
           </Panel>
 
-          <Panel header="更多信息" key="moreInfo">
+          <Panel 
+            header={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Info size={16} color="#722ed1" />
+                <span>更多信息</span>
+              </div>
+            } 
+            key="moreInfo"
+          >
             <div className="more-info">
               <div className="info-item">
                 <Text type="secondary">客户状态：</Text>
