@@ -56,6 +56,8 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
   const [transferNotifications, setTransferNotifications] = useState<any[]>([]);
   const [notificationExpanded, setNotificationExpanded] = useState<boolean>(false);
   const [notificationTimers, setNotificationTimers] = useState<{[key: string]: number}>({});
+  const [customerNotes, setCustomerNotes] = useState<string>('');
+  const [notesSaveStatus, setNotesSaveStatus] = useState<string>('');
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -409,6 +411,21 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
     setTransferSearchValue('');
   };
 
+  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCustomerNotes(e.target.value);
+    setNotesSaveStatus('');
+  };
+
+  const handleNotesBlur = () => {
+    // 自动保存备注
+    console.log('自动保存客户备注:', customerNotes);
+    setNotesSaveStatus('已保存');
+    // 2秒后清除保存状态提示
+    setTimeout(() => {
+      setNotesSaveStatus('');
+    }, 2000);
+  };
+
   const handleEndSession = () => {
     console.log('结束会话');
     // 这里可以添加结束会话的逻辑，比如更新会话状态为已完成
@@ -657,8 +674,19 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
               </div>
               <Divider />
               <div className="info-item">
-                <Text type="secondary">备注：</Text>
-                <TextArea placeholder="添加客户备注..." rows={3} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <Text type="secondary">备注：</Text>
+                  {notesSaveStatus && (
+                    <Text style={{ fontSize: '12px', color: '#52c41a' }}>{notesSaveStatus}</Text>
+                  )}
+                </div>
+                <TextArea 
+                  placeholder="添加客户备注..." 
+                  rows={3} 
+                  value={customerNotes}
+                  onChange={handleNotesChange}
+                  onBlur={handleNotesBlur}
+                />
               </div>
             </div>
           </Panel>
