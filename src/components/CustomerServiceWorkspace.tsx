@@ -136,6 +136,26 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
+  // 表情符号数据
+  const emojiCategories = [
+    {
+      category: '常用',
+      emojis: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚']
+    },
+    {
+      category: '手势',
+      emojis: ['👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👋', '🤚', '🖐️', '✋', '🖖', '👏']
+    },
+    {
+      category: '工作',
+      emojis: ['💼', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '💾', '💿', '📱', '☎️', '📞', '📠', '📧', '📨', '📩', '📤', '📥', '📪', '📫', '📬']
+    },
+    {
+      category: '符号',
+      emojis: ['❤️', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️']
+    }
+  ];
+
   const messages: Message[] = [
     {
       id: '1',
@@ -199,6 +219,48 @@ const CustomerServiceWorkspace: React.FC = () => {
     const newMessage = inputMessage ? `${inputMessage}\n${phrase}` : phrase;
     setInputMessage(newMessage);
   };
+
+  // 插入表情符号到输入框
+  const handleSelectEmoji = (emoji: string) => {
+    const newMessage = inputMessage + emoji;
+    setInputMessage(newMessage);
+  };
+
+  // 渲染表情符号选择面板
+  const renderEmojiContent = () => (
+    <div style={{ width: 300, maxHeight: 200, overflow: 'auto' }}>
+      <Tabs size="small">
+        {emojiCategories.map((category, index) => (
+          <TabPane tab={category.category} key={index}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(5, 1fr)', 
+              gap: '8px',
+              padding: '8px 0'
+            }}>
+              {category.emojis.map((emoji, emojiIndex) => (
+                <Button
+                  key={emojiIndex}
+                  type="text"
+                  size="small"
+                  style={{ 
+                    fontSize: '18px', 
+                    height: '32px', 
+                    width: '32px',
+                    padding: 0,
+                    border: 'none'
+                  }}
+                  onClick={() => handleSelectEmoji(emoji)}
+                >
+                  {emoji}
+                </Button>
+              ))}
+            </div>
+          </TabPane>
+        ))}
+      </Tabs>
+    </div>
+  );
 
   // 渲染常用语选择面板
   const renderCommonPhrasesContent = () => (
@@ -353,7 +415,14 @@ const CustomerServiceWorkspace: React.FC = () => {
         <div className="chat-input">
           <div className="input-toolbar">
             <Space>
-              <Button icon={<SmileOutlined />} type="text" />
+              <Popover
+                content={renderEmojiContent()}
+                title="表情符号"
+                trigger="click"
+                placement="topLeft"
+              >
+                <Button icon={<SmileOutlined />} type="text" />
+              </Popover>
               <Upload showUploadList={false}>
                 <Button icon={<PictureOutlined />} type="text" />
               </Upload>
