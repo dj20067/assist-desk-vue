@@ -657,15 +657,11 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                 <Text type="secondary">电话：</Text>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Text>138****8888</Text>
-                  <Button
-                    type="primary"
-                    size="small"
-                    icon={<PhoneOutlined />}
+                  <PhoneOutlined 
                     style={{ 
-                      minWidth: 'auto',
-                      width: '24px',
-                      height: '24px',
-                      padding: '0'
+                      color: '#1890ff',
+                      fontSize: '16px',
+                      cursor: 'pointer'
                     }}
                     onClick={() => {
                       // 直接触发呼叫，不显示完整号码
