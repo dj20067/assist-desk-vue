@@ -758,7 +758,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
                 marginBottom: 16
               }} />
                 <div className="log-list">
-                  <Timeline className="mt-4">
+                  <Timeline className="mt-4 pt-4">
                     <Timeline.Item color="blue" className="py-[15px]">
                       <div className="log-entry">
                         <Text className="log-timestamp">[2024-01-22 14:30:15]</Text>
