@@ -61,6 +61,25 @@ interface Message {
   timestamp: string;
 }
 
+interface MoreInfo {
+  academyCertificate: string;
+  customerStatus: string;
+  rpaCooperationType: string;
+  rpaCooperationStatus: string;
+  contractYear: string;
+  contractQuarter: string;
+  customerPriority: string;
+  monthsSinceContract: number;
+  customerSuccess: string;
+  technicalSupport: string;
+  serviceGroup: string;
+  healthIndicator: string;
+  computerVersionType: string;
+  clientVersion: string;
+  appScreenshot: string;
+  todayLogAddress: string;
+}
+
 const CustomerServiceWorkspace: React.FC = () => {
   const [selectedConversation, setSelectedConversation] = useState<string>('1');
   const [activeTab, setActiveTab] = useState<string>('waiting');
@@ -95,7 +114,26 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ]);
 
-  // 常用语数据
+  // 更多信息数据
+  const moreInfo: MoreInfo = {
+    academyCertificate: '已获得高级认证',
+    customerStatus: '活跃客户',
+    rpaCooperationType: '深度合作',
+    rpaCooperationStatus: '进行中',
+    contractYear: '2023',
+    contractQuarter: 'Q2',
+    customerPriority: '高优先级',
+    monthsSinceContract: 8,
+    customerSuccess: '李经理',
+    technicalSupport: '技术支持团队A',
+    serviceGroup: '企业服务组',
+    healthIndicator: '良好',
+    computerVersionType: 'Windows 11',
+    clientVersion: 'v2.3.1',
+    appScreenshot: 'https://example.com/screenshot.png',
+    todayLogAddress: 'https://logs.example.com/today'
+  };
+
   const commonPhrases = [
     {
       category: '问候语',
@@ -132,7 +170,6 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
-  // 模拟数据
   const conversations: ConversationItem[] = [
     {
       id: '1',
@@ -172,7 +209,6 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
-  // 表情符号数据
   const emojiCategories = [
     {
       category: '常用',
@@ -385,6 +421,41 @@ const CustomerServiceWorkspace: React.FC = () => {
     </div>
   );
 
+  const renderMoreInfoValue = (value: string | number, type: 'text' | 'tag' | 'link' | 'months' = 'text') => {
+    if (!value && value !== 0) {
+      return <Text type="secondary">--</Text>;
+    }
+
+    switch (type) {
+      case 'tag':
+        const getTagColor = (val: string) => {
+          if (val.includes('高') || val.includes('良好') || val.includes('活跃') || val.includes('进行中')) return 'green';
+          if (val.includes('中') || val.includes('一般')) return 'orange';
+          if (val.includes('低') || val.includes('差') || val.includes('待处理')) return 'red';
+          return 'blue';
+        };
+        return <Tag color={getTagColor(value.toString())}>{value}</Tag>;
+      
+      case 'link':
+        return (
+          <Button 
+            type="link" 
+            size="small" 
+            onClick={() => window.open(value.toString(), '_blank')}
+            style={{ padding: 0, height: 'auto' }}
+          >
+            查看链接
+          </Button>
+        );
+      
+      case 'months':
+        return <Text>{value}个月</Text>;
+      
+      default:
+        return <Text>{value}</Text>;
+    }
+  };
+
   return (
     <Layout className="customer-service-workspace">
       {/* 左侧会话列表 */}
@@ -487,7 +558,7 @@ const CustomerServiceWorkspace: React.FC = () => {
 
       {/* 右侧信息区 */}
       <Sider width="30%" className="info-sidebar">
-        <Collapse defaultActiveKey={['customer', 'app', 'history']} ghost>
+        <Collapse defaultActiveKey={['customer', 'app', 'history', 'moreInfo']} ghost>
           <Panel header="客户信息" key="customer">
             <div className="customer-info">
               <div className="info-item">
@@ -598,6 +669,75 @@ const CustomerServiceWorkspace: React.FC = () => {
                   </List.Item>
                 )}
               />
+            </div>
+          </Panel>
+
+          <Panel header="更多信息" key="moreInfo">
+            <div className="more-info">
+              <div className="info-item">
+                <Text type="secondary">学院证书：</Text>
+                {renderMoreInfoValue(moreInfo.academyCertificate, 'tag')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户状态：</Text>
+                {renderMoreInfoValue(moreInfo.customerStatus, 'tag')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">RPA合作类型：</Text>
+                {renderMoreInfoValue(moreInfo.rpaCooperationType)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">RPA合作状态：</Text>
+                {renderMoreInfoValue(moreInfo.rpaCooperationStatus, 'tag')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约年份：</Text>
+                {renderMoreInfoValue(moreInfo.contractYear)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约季度：</Text>
+                {renderMoreInfoValue(moreInfo.contractQuarter)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户优先级：</Text>
+                {renderMoreInfoValue(moreInfo.customerPriority, 'tag')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约时间距今月份：</Text>
+                {renderMoreInfoValue(moreInfo.monthsSinceContract, 'months')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户成功：</Text>
+                {renderMoreInfoValue(moreInfo.customerSuccess)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">技术支持：</Text>
+                {renderMoreInfoValue(moreInfo.technicalSupport)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">服务小组：</Text>
+                {renderMoreInfoValue(moreInfo.serviceGroup)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">健康指标：</Text>
+                {renderMoreInfoValue(moreInfo.healthIndicator, 'tag')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">电脑版本类型：</Text>
+                {renderMoreInfoValue(moreInfo.computerVersionType)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户端版本：</Text>
+                {renderMoreInfoValue(moreInfo.clientVersion)}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">应用截图：</Text>
+                {renderMoreInfoValue(moreInfo.appScreenshot, 'link')}
+              </div>
+              <div className="info-item">
+                <Text type="secondary">当天日志地址：</Text>
+                {renderMoreInfoValue(moreInfo.todayLogAddress, 'link')}
+              </div>
             </div>
           </Panel>
         </Collapse>
