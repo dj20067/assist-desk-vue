@@ -245,53 +245,14 @@ const CustomerServiceWorkspace: React.FC = () => {
     setInputMessage(newMessage);
   };
 
+  const handleHistoryItemClick = (item: any) => {
+    setSelectedHistoryItem(item);
+    setHistoryModalVisible(true);
+  };
+
   const handleSelectEmoji = (emoji: string) => {
     const newMessage = inputMessage + emoji;
     setInputMessage(newMessage);
-  };
-
-  const handleHistoryItemClick = (item: any) => {
-    setSelectedHistoryItem({
-      ...item,
-      messages: [
-        {
-          id: '1',
-          type: 'text',
-          content: item.summary,
-          sender: 'user',
-          timestamp: '09:15'
-        },
-        {
-          id: '2',
-          type: 'text',
-          content: '我来帮您查看一下这个问题。',
-          sender: 'agent',
-          timestamp: '09:16'
-        },
-        {
-          id: '3',
-          type: 'text',
-          content: '好的，我需要重新配置一下流程参数。',
-          sender: 'user',
-          timestamp: '09:20'
-        },
-        {
-          id: '4',
-          type: 'text',
-          content: '已为您处理完成，请检查流程是否正常运行。',
-          sender: 'agent',
-          timestamp: '09:25'
-        },
-        {
-          id: '5',
-          type: 'text',
-          content: '测试正常，谢谢您的帮助！',
-          sender: 'user',
-          timestamp: '09:30'
-        }
-      ]
-    });
-    setHistoryModalVisible(true);
   };
 
   const renderEmojiContent = () => (
@@ -631,12 +592,8 @@ const CustomerServiceWorkspace: React.FC = () => {
                   }
                 ]}
                 renderItem={(item) => (
-                  <List.Item>
-                    <div 
-                      className="history-item" 
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleHistoryItemClick(item)}
-                    >
+                  <List.Item style={{ cursor: 'pointer' }} onClick={() => handleHistoryItemClick(item)}>
+                    <div className="history-item">
                       <div className="history-date">
                         <Text type="secondary">{item.date}</Text>
                       </div>
@@ -722,39 +679,96 @@ const CustomerServiceWorkspace: React.FC = () => {
         </Collapse>
       </Sider>
 
-      {/* 历史会话详情模态框 */}
+      {/* 历史会话详情模态窗口 */}
       <Modal
-        title={
-          <div>
-            <Text strong>历史会话详情</Text>
-            <div style={{ marginTop: 8 }}>
-              <Text type="secondary">日期: {selectedHistoryItem?.date}</Text>
-              <span style={{ margin: '0 8px' }}>|</span>
-              <Tag color="green">{selectedHistoryItem?.status}</Tag>
-            </div>
-          </div>
-        }
-        visible={historyModalVisible}
+        title="会话历史记录"
+        open={historyModalVisible}
         onCancel={() => setHistoryModalVisible(false)}
         footer={null}
-        width={600}
-        bodyStyle={{ height: '400px', overflow: 'auto' }}
+        width={800}
       >
         {selectedHistoryItem && (
-          <div className="history-messages">
-            {selectedHistoryItem.messages?.map((message: Message) => (
-              <div
-                key={message.id}
-                className={`message ${message.sender === 'user' ? 'message-user' : 'message-agent'}`}
-              >
+          <div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>问题概述：</Text>
+              <Text>{selectedHistoryItem.summary}</Text>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>处理日期：</Text>
+              <Text>{selectedHistoryItem.date}</Text>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>处理状态：</Text>
+              <Tag color="green">{selectedHistoryItem.status}</Tag>
+            </div>
+            <Divider />
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>会话记录：</Text>
+            </div>
+            <div className="chat-messages" style={{ maxHeight: 400, overflow: 'auto', padding: 20, borderRadius: 8 }}>
+              <div className={`message message-user`}>
                 <div className="message-content">
-                  <Text style={{ whiteSpace: 'pre-wrap' }}>{message.content}</Text>
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>您好，我遇到了RPA流程配置的问题，能帮我看看吗？</Text>
                 </div>
                 <div className="message-time">
-                  <Text type="secondary">{message.timestamp}</Text>
+                  <Text type="secondary">10:30</Text>
                 </div>
               </div>
-            ))}
+              
+              <div className={`message message-agent`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>您好！我是客服小王，很高兴为您服务。请详细描述一下遇到的问题。</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:31</Text>
+                </div>
+              </div>
+              
+              <div className={`message message-user`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>我在执行流程时总是提示"连接超时"错误，已经重试好几次了。</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:32</Text>
+                </div>
+              </div>
+              
+              <div className={`message message-agent`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>我来帮您检查一下系统状态，请稍等片刻。这可能是网络连接或者权限配置的问题。</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:33</Text>
+                </div>
+              </div>
+              
+              <div className={`message message-agent`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>我查看了您的日志，发现是RPA应用包的权限配置有问题。我已经为您重新配置了权限，请重新尝试执行流程。</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:35</Text>
+                </div>
+              </div>
+              
+              <div className={`message message-user`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>太好了！现在可以正常执行了，谢谢您的帮助！</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:37</Text>
+                </div>
+              </div>
+              
+              <div className={`message message-agent`}>
+                <div className="message-content">
+                  <Text style={{ whiteSpace: 'pre-wrap' }}>问题已经为您解决，如果您还有其他问题，随时联系我们。祝您工作愉快！</Text>
+                </div>
+                <div className="message-time">
+                  <Text type="secondary">10:38</Text>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </Modal>
