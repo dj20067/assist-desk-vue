@@ -578,7 +578,15 @@ const CustomerServiceWorkspace: React.FC = () => {
               </div>
               <div className="info-item">
                 <Text type="secondary">Boss：</Text>
-                <Text>https://boss.shadow-rpa.net/simple/appStudio/app/807803110861266944/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85/OrgDetailPage?organizationUuid=33aebb43-cc64-11ed-91ab-0242ac1b0002</Text>
+                <Button 
+                  type="link" 
+                  size="small" 
+                  href="https://boss.shadow-rpa.net/simple/appStudio/app/807803110861266944/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85/OrgDetailPage?organizationUuid=33aebb43-cc64-11ed-91ab-0242ac1b0002"
+                  target="_blank"
+                  style={{ padding: 0, height: 'auto' }}
+                >
+                  查看
+                </Button>
               </div>
             </div>
           </Panel>
