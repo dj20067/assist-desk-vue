@@ -892,7 +892,7 @@ const CustomerServiceWorkspace: React.FC = () => {
         width={400}
       >
         <div style={{ padding: '16px 0' }}>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 0 }}>
             <Text>确定要结束与 <Text strong>张小明</Text> 的会话吗？</Text>
             <div style={{ marginTop: 8, color: '#666' }}>
               <Text type="secondary">结束后该会话将标记为已完成状态</Text>
