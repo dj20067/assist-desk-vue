@@ -48,6 +48,7 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
   const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
   const [transferNotifications, setTransferNotifications] = useState<any[]>([]);
+  const [showTransferList, setShowTransferList] = useState<boolean>(false);
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -389,6 +390,14 @@ const CustomerServiceWorkspace: React.FC = () => {
 
   const handleCloseNotification = (notificationId: string) => {
     setTransferNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+  };
+
+  const handleShowTransferList = () => {
+    setShowTransferList(true);
+  };
+
+  const handleCloseTransferList = () => {
+    setShowTransferList(false);
   };
   const renderEmojiContent = () => <div style={{
     width: 300,
@@ -993,23 +1002,21 @@ const CustomerServiceWorkspace: React.FC = () => {
         </div>
       </Modal>
 
-      {/* 转接申请通知弹窗 - 支持多个通知叠加 */}
-      {transferNotifications.map((notification, index) => (
+      {/* 转接申请通知弹窗 - 单个通知直接显示，多个通知通过统计标签展示 */}
+      {transferNotifications.length === 1 && transferNotifications.map((notification, index) => (
         <div 
           key={notification.notificationId}
           style={{
             position: 'fixed',
-            bottom: `${20 + index * 10}px`,
-            right: `${20 + index * 10}px`,
+            bottom: '20px',
+            right: '20px',
             width: '350px',
             backgroundColor: 'white',
             borderRadius: '8px',
-            boxShadow: `0 ${4 + index * 2}px ${12 + index * 4}px rgba(0,0,0,${0.15 + index * 0.05})`,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             border: '1px solid #d9d9d9',
-            zIndex: 1000 - index,
-            animation: 'fadeInUp 0.3s ease-out',
-            transform: `rotate(${index * 2}deg)`,
-            transformOrigin: 'bottom right'
+            zIndex: 1000,
+            animation: 'fadeInUp 0.3s ease-out'
           }}
         >
           <div style={{ 
@@ -1069,7 +1076,7 @@ const CustomerServiceWorkspace: React.FC = () => {
           style={{
             position: 'fixed',
             bottom: '20px',
-            right: '390px',
+            right: transferNotifications.length === 1 ? '390px' : '20px',
             backgroundColor: '#ff4d4f',
             color: 'white',
             borderRadius: '20px',
@@ -1078,12 +1085,66 @@ const CustomerServiceWorkspace: React.FC = () => {
             fontWeight: 'bold',
             boxShadow: '0 2px 8px rgba(255,77,79,0.3)',
             zIndex: 1001,
-            animation: 'pulse 2s infinite'
+            animation: 'pulse 2s infinite',
+            cursor: transferNotifications.length > 1 ? 'pointer' : 'default'
           }}
+          onClick={transferNotifications.length > 1 ? handleShowTransferList : undefined}
         >
           {transferNotifications.length} 个转接申请待处理
         </div>
       )}
+
+      {/* 转接申请列表模态窗口 */}
+      <Modal 
+        title={`转接申请列表 (${transferNotifications.length})`}
+        open={showTransferList} 
+        onCancel={handleCloseTransferList}
+        footer={null}
+        width={600}
+      >
+        <div style={{ maxHeight: '400px', overflow: 'auto' }}>
+          {transferNotifications.map((notification, index) => (
+            <div 
+              key={notification.notificationId}
+              style={{
+                padding: '16px',
+                border: '1px solid #f0f0f0',
+                borderRadius: '8px',
+                marginBottom: '12px',
+                backgroundColor: '#fafafa'
+              }}
+            >
+              <div style={{ marginBottom: 12 }}>
+                <Text strong>{notification.fromEngineer}</Text>
+                <Text type="secondary" style={{ marginLeft: 8 }}>
+                  {notification.waitTime}
+                </Text>
+              </div>
+              
+              <div style={{ marginBottom: 8 }}>
+                <Text type="secondary">客户：</Text>
+                <Text>{notification.customer}</Text>
+              </div>
+              
+              <div style={{ marginBottom: 16 }}>
+                <Text type="secondary">原因：</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Text>{notification.reason}</Text>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                <Button size="small" onClick={() => handleRejectTransfer(notification.notificationId)}>
+                  拒绝
+                </Button>
+                <Button type="primary" size="small" onClick={() => handleAcceptTransfer(notification.notificationId)}>
+                  接受
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </Layout>;
 };
 export default CustomerServiceWorkspace;
