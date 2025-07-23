@@ -148,25 +148,6 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
               </div>
             </Select.Option>
           </Select>
-          
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center',
-            marginLeft: 8
-          }}>
-            <div 
-              style={{ 
-                width: 8, 
-                height: 8, 
-                borderRadius: '50%', 
-                backgroundColor: getStatusColor(status),
-                marginRight: 6 
-              }} 
-            />
-            <Text style={{ color: getStatusColor(status), fontWeight: 500 }}>
-              {getStatusText(status)}
-            </Text>
-          </div>
         </Space>
       </Space>
 
