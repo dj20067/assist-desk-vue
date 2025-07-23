@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
 import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined } from '@ant-design/icons';
+import { OnlineStatus } from './TopNavigationBar';
 import './CustomerServiceWorkspace.less';
 const {
   Sider,
@@ -38,7 +39,11 @@ interface Message {
   sender: 'user' | 'agent';
   timestamp: string;
 }
-const CustomerServiceWorkspace: React.FC = () => {
+interface CustomerServiceWorkspaceProps {
+  onlineStatus: OnlineStatus;
+}
+
+const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onlineStatus }) => {
   const [selectedConversation, setSelectedConversation] = useState<string>('1');
   const [activeTab, setActiveTab] = useState<string>('waiting');
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -108,9 +113,14 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
-  // 每10秒弹出转接申请通知
+  // 每10秒弹出转接申请通知（仅在在线状态下）
   useEffect(() => {
     const interval = setInterval(() => {
+      // 只有在线状态才接受新的转接申请
+      if (onlineStatus !== 'online') {
+        return;
+      }
+      
       const randomRequest = transferRequests[Math.floor(Math.random() * transferRequests.length)];
       const newNotification = {
         ...randomRequest,
@@ -125,7 +135,7 @@ const CustomerServiceWorkspace: React.FC = () => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [onlineStatus]);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([{
     id: '1',
@@ -507,7 +517,6 @@ const CustomerServiceWorkspace: React.FC = () => {
           </div>
           <Space>
             <Button icon={<SwapOutlined />} onClick={() => setTransferModalVisible(true)}>转接</Button>
-            <Button icon={<PhoneOutlined />}>外呼</Button>
             <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
             <Button onClick={() => setEndSessionModalVisible(true)}>结束会话</Button>
             <Button icon={<FileTextOutlined />} type="primary">
