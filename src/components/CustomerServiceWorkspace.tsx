@@ -1217,24 +1217,10 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                 }}
               >
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <Text strong>{notification.fromEngineer}</Text>
-                      <Text type="secondary" style={{ marginLeft: 8 }}>
-                        {notification.waitTime}
-                      </Text>
-                    </div>
-                    <div style={{ 
-                      backgroundColor: '#ff4d4f', 
-                      color: 'white', 
-                      padding: '2px 8px', 
-                      borderRadius: '12px', 
-                      fontSize: '12px',
-                      fontWeight: 'bold'
-                    }}>
-                      {notificationTimers[notification.notificationId] || 30}s
-                    </div>
-                  </div>
+                  <Text strong>{notification.fromEngineer}</Text>
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {notification.waitTime}
+                  </Text>
                 </div>
                 
                 <div style={{ marginBottom: 8 }}>
@@ -1254,7 +1240,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({ onl
                     size="small" 
                     onClick={() => handleRejectTransfer(notification.notificationId)}
                   >
-                    拒绝
+                    拒绝 ({notificationTimers[notification.notificationId] || 30}s自动)
                   </Button>
                   <Button 
                     type="primary" 
