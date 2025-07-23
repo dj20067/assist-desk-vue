@@ -216,8 +216,18 @@ const CustomerServiceWorkspace: React.FC = () => {
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
-      // 发送消息逻辑
-      console.log('发送消息:', inputMessage);
+      const now = new Date();
+      const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        type: 'text',
+        content: inputMessage,
+        sender: 'agent',
+        timestamp: timestamp
+      };
+      
+      setMessages(prevMessages => [...prevMessages, newMessage]);
       setInputMessage('');
     }
   };
@@ -362,7 +372,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             }}
           />
         ) : (
-          <Text>{message.content}</Text>
+          <Text style={{ whiteSpace: 'pre-wrap' }}>{message.content}</Text>
         )}
       </div>
       <div className="message-time">
