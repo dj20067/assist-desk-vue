@@ -899,7 +899,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ textAlign: 'right', borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
+          <div style={{ textAlign: 'right', paddingTop: 16 }}>
             <Space>
               <Button onClick={handleEndSessionCancel}>取消</Button>
               <Button type="primary" onClick={handleEndSession}>结束</Button>
