@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Input, List, Typography, Space, Tag, Avatar, Divider } from 'antd';
+import { Button, Input, List, Typography, Space, Tag, Avatar, Divider, Progress } from 'antd';
 import { PhoneOutlined, CloseOutlined, MinusOutlined, DragOutlined, UserOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
@@ -24,6 +24,9 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
   const [isMinimized, setIsMinimized] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [callState, setCallState] = useState<'idle' | 'calling' | 'connected'>('idle');
+  const [currentCall, setCurrentCall] = useState<{ name?: string; phone: string } | null>(null);
+  const [callDuration, setCallDuration] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // 模拟联系人数据
@@ -74,9 +77,42 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
     };
   }, [isDragging, dragOffset]);
 
-  const handleCall = (phone: string) => {
+  const handleCall = (phone: string, contact?: Contact) => {
     console.log('拨打电话:', phone);
-    // 这里可以添加实际的拨打电话逻辑
+    setCurrentCall({
+      name: contact?.name,
+      phone: phone
+    });
+    setCallState('calling');
+    setPhoneNumber('');
+    
+    // 模拟连接过程
+    setTimeout(() => {
+      setCallState('connected');
+      // 开始计时
+      const timer = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+      
+      // 保存timer到ref或state以便清理
+      (window as any).callTimer = timer;
+    }, 3000);
+  };
+
+  const handleHangup = () => {
+    setCallState('idle');
+    setCurrentCall(null);
+    setCallDuration(0);
+    if ((window as any).callTimer) {
+      clearInterval((window as any).callTimer);
+      (window as any).callTimer = null;
+    }
+  };
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const getStatusColor = (status: string) => {
@@ -136,7 +172,9 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <DragOutlined />
           <PhoneOutlined />
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>外呼面板</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>
+            {callState === 'idle' ? '外呼面板' : callState === 'calling' ? '呼叫中...' : '通话中'}
+          </Text>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <Button
@@ -159,95 +197,171 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose 
       {/* 面板内容 */}
       {!isMinimized && (
         <div style={{ padding: '16px', height: '430px', overflow: 'auto' }}>
-          {/* 拨号区域 */}
-          <div style={{ marginBottom: 16 }}>
-            <Text strong style={{ display: 'block', marginBottom: 8 }}>直接拨号</Text>
-            <Space.Compact style={{ width: '100%' }}>
-              <Input
-                placeholder="输入电话号码..."
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <Button
-                type="primary"
-                icon={<PhoneOutlined />}
-                onClick={() => handleCall(phoneNumber)}
-                disabled={!phoneNumber.trim()}
-              >
-                拨打
-              </Button>
-            </Space.Compact>
-          </div>
-
-          <Divider />
-
-          {/* 联系人列表 */}
-          <div>
-            <Text strong style={{ display: 'block', marginBottom: 8 }}>联系人</Text>
-            <Input
-              placeholder="搜索联系人..."
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              style={{ marginBottom: 12 }}
-            />
-            
-            <List
-              size="small"
-              dataSource={filteredContacts}
-              renderItem={(contact) => (
-                <List.Item
-                  style={{
-                    padding: '8px 0',
-                    borderBottom: '1px solid #f0f0f0'
-                  }}
-                  actions={[
-                    <Button
-                      key="call"
-                      type="primary"
-                      size="small"
-                      icon={<PhoneOutlined />}
-                      onClick={() => handleCall(contact.phone)}
-                      disabled={contact.status === 'offline'}
-                    >
-                      拨打
-                    </Button>
-                  ]}
-                >
-                  <List.Item.Meta
-                    avatar={
-                      contact.avatar ? (
-                        <Avatar src={contact.avatar} size="small" />
-                      ) : (
-                        <Avatar icon={<UserOutlined />} size="small" />
-                      )
-                    }
-                    title={
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <Text strong style={{ fontSize: '14px' }}>{contact.name}</Text>
-                        <Tag
-                          color={getStatusColor(contact.status)}
-                          style={{ 
-                            fontSize: '12px', 
-                            padding: '2px 6px',
-                            lineHeight: '16px',
-                            height: 'auto'
-                          }}
-                        >
-                          {getStatusText(contact.status)}
-                        </Tag>
-                      </div>
-                    }
-                    description={
-                      <Text type="secondary" style={{ fontSize: '12px' }}>
-                        {contact.phone}
-                      </Text>
-                    }
+          {callState === 'idle' ? (
+            // 正常外呼界面
+            <>
+              {/* 拨号区域 */}
+              <div style={{ marginBottom: 16 }}>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>直接拨号</Text>
+                <Space.Compact style={{ width: '100%' }}>
+                  <Input
+                    placeholder="输入电话号码..."
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    style={{ flex: 1 }}
                   />
-                </List.Item>
+                  <Button
+                    type="primary"
+                    icon={<PhoneOutlined />}
+                    onClick={() => handleCall(phoneNumber)}
+                    disabled={!phoneNumber.trim()}
+                  >
+                    拨打
+                  </Button>
+                </Space.Compact>
+              </div>
+
+              <Divider />
+
+              {/* 联系人列表 */}
+              <div>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>联系人</Text>
+                <Input
+                  placeholder="搜索联系人..."
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  style={{ marginBottom: 12 }}
+                />
+                
+                <List
+                  size="small"
+                  dataSource={filteredContacts}
+                  renderItem={(contact) => (
+                    <List.Item
+                      style={{
+                        padding: '8px 0',
+                        borderBottom: '1px solid #f0f0f0'
+                      }}
+                      actions={[
+                        <Button
+                          key="call"
+                          type="primary"
+                          size="small"
+                          icon={<PhoneOutlined />}
+                          onClick={() => handleCall(contact.phone, contact)}
+                          disabled={contact.status === 'offline'}
+                        >
+                          拨打
+                        </Button>
+                      ]}
+                    >
+                      <List.Item.Meta
+                        avatar={
+                          contact.avatar ? (
+                            <Avatar src={contact.avatar} size="small" />
+                          ) : (
+                            <Avatar icon={<UserOutlined />} size="small" />
+                          )
+                        }
+                        title={
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <Text strong style={{ fontSize: '14px' }}>{contact.name}</Text>
+                            <Tag
+                              color={getStatusColor(contact.status)}
+                              style={{ 
+                                fontSize: '12px', 
+                                padding: '2px 6px',
+                                lineHeight: '16px',
+                                height: 'auto'
+                              }}
+                            >
+                              {getStatusText(contact.status)}
+                            </Tag>
+                          </div>
+                        }
+                        description={
+                          <Text type="secondary" style={{ fontSize: '12px' }}>
+                            {contact.phone}
+                          </Text>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
+              </div>
+            </>
+          ) : (
+            // 呼叫中/通话中界面
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              height: '100%',
+              textAlign: 'center'
+            }}>
+              {/* 联系人头像 */}
+              <Avatar 
+                size={80} 
+                src={currentCall?.name ? filteredContacts.find(c => c.name === currentCall.name)?.avatar : undefined}
+                icon={<UserOutlined />}
+                style={{ marginBottom: 16 }}
+              />
+              
+              {/* 联系人信息 */}
+              <Text strong style={{ fontSize: '18px', marginBottom: 8 }}>
+                {currentCall?.name || '未知联系人'}
+              </Text>
+              <Text type="secondary" style={{ fontSize: '14px', marginBottom: 16 }}>
+                {currentCall?.phone}
+              </Text>
+              
+              {/* 状态显示 */}
+              {callState === 'calling' ? (
+                <div style={{ marginBottom: 24 }}>
+                  <Progress
+                    type="circle"
+                    percent={100}
+                    size={60}
+                    status="active"
+                    showInfo={false}
+                    strokeColor="#1890ff"
+                  />
+                  <div style={{ marginTop: 12 }}>
+                    <Text style={{ color: '#1890ff' }}>正在连接...</Text>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ 
+                    fontSize: '24px', 
+                    fontWeight: 'bold', 
+                    color: '#52c41a',
+                    marginBottom: 8
+                  }}>
+                    {formatDuration(callDuration)}
+                  </div>
+                  <Text style={{ color: '#52c41a' }}>通话中</Text>
+                </div>
               )}
-            />
-          </div>
+              
+              {/* 挂断按钮 */}
+              <Button
+                danger
+                type="primary"
+                size="large"
+                shape="circle"
+                icon={<PhoneOutlined style={{ transform: 'rotate(135deg)' }} />}
+                onClick={handleHangup}
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  backgroundColor: '#ff4d4f',
+                  borderColor: '#ff4d4f'
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
