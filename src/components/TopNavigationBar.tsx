@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Button, Select, Space, Typography } from 'antd';
 import { PhoneOutlined } from '@ant-design/icons';
+import OutboundCallPanel from './OutboundCallPanel';
 import './TopNavigationBar.css';
 
 const { Header } = Layout;
@@ -14,6 +15,7 @@ interface TopNavigationBarProps {
 
 const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) => {
   const [status, setStatus] = useState<OnlineStatus>('online');
+  const [showOutboundPanel, setShowOutboundPanel] = useState(false);
 
   const handleStatusChange = (value: OnlineStatus) => {
     setStatus(value);
@@ -80,6 +82,7 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
           size="small"
           style={{ minWidth: 'auto' }}
           className="outbound-call-btn"
+          onClick={() => setShowOutboundPanel(true)}
         >
           <span className="btn-text">外呼</span>
         </Button>
@@ -156,6 +159,12 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
           </div>
         </Space>
       </Space>
+
+      {/* 外呼面板 */}
+      <OutboundCallPanel 
+        visible={showOutboundPanel}
+        onClose={() => setShowOutboundPanel(false)}
+      />
     </Header>
   );
 };
