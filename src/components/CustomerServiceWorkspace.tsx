@@ -192,7 +192,6 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
-
   const getConversationsByStatus = (status: string) => {
     return conversations.filter(conv => conv.status === status);
   };
@@ -239,19 +238,16 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   };
 
-  // 插入常用语到输入框
   const handleSelectPhrase = (phrase: string) => {
     const newMessage = inputMessage ? `${inputMessage}\n${phrase}` : phrase;
     setInputMessage(newMessage);
   };
 
-  // 插入表情符号到输入框
   const handleSelectEmoji = (emoji: string) => {
     const newMessage = inputMessage + emoji;
     setInputMessage(newMessage);
   };
 
-  // 渲染表情符号选择面板
   const renderEmojiContent = () => (
     <div style={{ width: 300, maxHeight: 200, overflow: 'auto' }}>
       <Tabs size="small">
@@ -287,7 +283,6 @@ const CustomerServiceWorkspace: React.FC = () => {
     </div>
   );
 
-  // 渲染常用语选择面板
   const renderCommonPhrasesContent = () => (
     <div style={{ width: 400, maxHeight: 300, overflow: 'auto' }}>
       <Collapse ghost>
@@ -353,7 +348,7 @@ const CustomerServiceWorkspace: React.FC = () => {
   const renderMessage = (message: Message) => (
     <div
       key={message.id}
-      className={`message ${message.sender === 'agent' ? 'message-agent' : 'message-user'}`}
+      className={`message ${message.sender === 'user' ? 'message-agent' : 'message-user'}`}
     >
       <div className="message-content">
         {message.type === 'code' ? (
