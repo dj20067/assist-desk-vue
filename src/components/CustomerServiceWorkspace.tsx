@@ -66,6 +66,8 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('waiting');
   const [inputMessage, setInputMessage] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
+  const [historyModalVisible, setHistoryModalVisible] = useState<boolean>(false);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -241,6 +243,11 @@ const CustomerServiceWorkspace: React.FC = () => {
   const handleSelectPhrase = (phrase: string) => {
     const newMessage = inputMessage ? `${inputMessage}\n${phrase}` : phrase;
     setInputMessage(newMessage);
+  };
+
+  const handleHistoryItemClick = (item: any) => {
+    setSelectedHistoryItem(item);
+    setHistoryModalVisible(true);
   };
 
   const handleSelectEmoji = (emoji: string) => {
@@ -585,7 +592,7 @@ const CustomerServiceWorkspace: React.FC = () => {
                   }
                 ]}
                 renderItem={(item) => (
-                  <List.Item>
+                  <List.Item style={{ cursor: 'pointer' }} onClick={() => handleHistoryItemClick(item)}>
                     <div className="history-item">
                       <div className="history-date">
                         <Text type="secondary">{item.date}</Text>
@@ -671,6 +678,89 @@ const CustomerServiceWorkspace: React.FC = () => {
           </Panel>
         </Collapse>
       </Sider>
+
+      {/* 历史会话详情模态窗口 */}
+      <Modal
+        title="会话历史记录"
+        open={historyModalVisible}
+        onCancel={() => setHistoryModalVisible(false)}
+        footer={null}
+        width={800}
+      >
+        {selectedHistoryItem && (
+          <div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>问题概述：</Text>
+              <Text>{selectedHistoryItem.summary}</Text>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>处理日期：</Text>
+              <Text>{selectedHistoryItem.date}</Text>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>处理状态：</Text>
+              <Tag color="green">{selectedHistoryItem.status}</Tag>
+            </div>
+            <Divider />
+            <div style={{ marginBottom: 16 }}>
+              <Text strong>会话记录：</Text>
+            </div>
+            <div style={{ maxHeight: 400, overflow: 'auto', background: '#fafafa', padding: 16, borderRadius: 8 }}>
+              <Timeline>
+                <Timeline.Item color="blue">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:30</Text>
+                    <br />
+                    <Text>客户：您好，我遇到了RPA流程配置的问题，能帮我看看吗？</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="green">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:31</Text>
+                    <br />
+                    <Text>客服：您好！我是客服小王，很高兴为您服务。请详细描述一下遇到的问题。</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="blue">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:32</Text>
+                    <br />
+                    <Text>客户：我在执行流程时总是提示"连接超时"错误，已经重试好几次了。</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="green">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:33</Text>
+                    <br />
+                    <Text>客服：我来帮您检查一下系统状态，请稍等片刻。这可能是网络连接或者权限配置的问题。</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="green">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:35</Text>
+                    <br />
+                    <Text>客服：我查看了您的日志，发现是RPA应用包的权限配置有问题。我已经为您重新配置了权限，请重新尝试执行流程。</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="blue">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:37</Text>
+                    <br />
+                    <Text>客户：太好了！现在可以正常执行了，谢谢您的帮助！</Text>
+                  </div>
+                </Timeline.Item>
+                <Timeline.Item color="green">
+                  <div style={{ marginBottom: 8 }}>
+                    <Text type="secondary">10:38</Text>
+                    <br />
+                    <Text>客服：问题已经为您解决，如果您还有其他问题，随时联系我们。祝您工作愉快！</Text>
+                  </div>
+                </Timeline.Item>
+              </Timeline>
+            </div>
+          </div>
+        )}
+      </Modal>
     </Layout>
   );
 };
