@@ -16,7 +16,8 @@ import {
   Modal,
   Image,
   Timeline,
-  Tooltip
+  Tooltip,
+  Popover
 } from 'antd';
 import {
   MessageOutlined,
@@ -63,6 +64,43 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('waiting');
   const [inputMessage, setInputMessage] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
+
+  // 常用语数据
+  const commonPhrases = [
+    {
+      category: '问候语',
+      phrases: [
+        '您好！我是客服小王，很高兴为您服务。',
+        '您好，请问有什么可以帮助您的吗？',
+        '感谢您的耐心等待，现在为您服务。'
+      ]
+    },
+    {
+      category: '技术支持',
+      phrases: [
+        '请您详细描述一下遇到的问题，我来帮您解决。',
+        '我来为您检查一下系统状态，请稍等。',
+        '这个问题我需要联系技术人员确认，请稍等片刻。',
+        '请您提供一下错误截图，这样我能更好地帮您解决问题。'
+      ]
+    },
+    {
+      category: 'RPA相关',
+      phrases: [
+        '关于RPA流程配置，您可以参考我们的帮助文档。',
+        '请确认您的RPA应用包版本是否为最新版本。',
+        '这个RPA流程执行失败可能是权限问题，我来帮您检查。'
+      ]
+    },
+    {
+      category: '结束语',
+      phrases: [
+        '问题已经为您解决，还有其他需要帮助的吗？',
+        '如果您还有其他问题，随时联系我们。',
+        '感谢您的使用，祝您工作愉快！'
+      ]
+    }
+  ];
 
   // 模拟数据
   const conversations: ConversationItem[] = [
@@ -155,6 +193,36 @@ const CustomerServiceWorkspace: React.FC = () => {
       setInputMessage('');
     }
   };
+
+  // 插入常用语到输入框
+  const handleSelectPhrase = (phrase: string) => {
+    const newMessage = inputMessage ? `${inputMessage}\n${phrase}` : phrase;
+    setInputMessage(newMessage);
+  };
+
+  // 渲染常用语选择面板
+  const renderCommonPhrasesContent = () => (
+    <div style={{ width: 400, maxHeight: 300, overflow: 'auto' }}>
+      <Collapse ghost>
+        {commonPhrases.map((category, index) => (
+          <Panel header={category.category} key={index}>
+            <List
+              size="small"
+              dataSource={category.phrases}
+              renderItem={(phrase) => (
+                <List.Item
+                  style={{ cursor: 'pointer', padding: '4px 0' }}
+                  onClick={() => handleSelectPhrase(phrase)}
+                >
+                  <Text>{phrase}</Text>
+                </List.Item>
+              )}
+            />
+          </Panel>
+        ))}
+      </Collapse>
+    </div>
+  );
 
   const renderConversationItem = (item: ConversationItem) => (
     <List.Item
@@ -289,7 +357,14 @@ const CustomerServiceWorkspace: React.FC = () => {
               <Upload showUploadList={false}>
                 <Button icon={<PictureOutlined />} type="text" />
               </Upload>
-              <Button type="text">常用语</Button>
+              <Popover
+                content={renderCommonPhrasesContent()}
+                title="常用语"
+                trigger="click"
+                placement="topLeft"
+              >
+                <Button type="text">常用语</Button>
+              </Popover>
               <Button type="text">知识库</Button>
             </Space>
           </div>
