@@ -46,6 +46,7 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [historyModalVisible, setHistoryModalVisible] = useState<boolean>(false);
   const [serviceSummaryModalVisible, setServiceSummaryModalVisible] = useState<boolean>(false);
   const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
+  const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -293,6 +294,17 @@ const CustomerServiceWorkspace: React.FC = () => {
     setTransferProblemDesc('');
     setTransferSearchValue('');
   };
+
+  const handleEndSession = () => {
+    console.log('结束会话');
+    // 这里可以添加结束会话的逻辑，比如更新会话状态为已完成
+    setEndSessionModalVisible(false);
+    // 可以添加成功提示
+  };
+
+  const handleEndSessionCancel = () => {
+    setEndSessionModalVisible(false);
+  };
   const renderEmojiContent = () => <div style={{
     width: 300,
     maxHeight: 200,
@@ -412,6 +424,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             <Button icon={<SwapOutlined />} onClick={() => setTransferModalVisible(true)}>转接</Button>
             <Button icon={<PhoneOutlined />}>外呼</Button>
             <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
+            <Button onClick={() => setEndSessionModalVisible(true)}>结束会话</Button>
             <Button icon={<FileTextOutlined />} type="primary">
               新建工单
             </Button>
@@ -865,6 +878,31 @@ const CustomerServiceWorkspace: React.FC = () => {
               >
                 确定
               </Button>
+            </Space>
+          </div>
+        </div>
+      </Modal>
+
+      {/* 结束会话确认模态窗口 */}
+      <Modal 
+        title="结束会话" 
+        open={endSessionModalVisible} 
+        onCancel={handleEndSessionCancel}
+        footer={null}
+        width={400}
+      >
+        <div style={{ padding: '16px 0' }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <Text>确定要结束与 <Text strong>张小明</Text> 的会话吗？</Text>
+            <div style={{ marginTop: 8, color: '#666' }}>
+              <Text type="secondary">结束后该会话将标记为已完成状态</Text>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'right', borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
+            <Space>
+              <Button onClick={handleEndSessionCancel}>取消</Button>
+              <Button type="primary" onClick={handleEndSession}>确定结束</Button>
             </Space>
           </div>
         </div>
