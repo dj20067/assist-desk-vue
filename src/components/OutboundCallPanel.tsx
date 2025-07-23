@@ -84,17 +84,19 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
 
   // 处理摇晃动画
   useEffect(() => {
-    if (onShake) {
-      const handleShake = () => {
-        setIsShaking(true);
-        setTimeout(() => setIsShaking(false), 600);
-      };
-      
-      // 监听父组件触发的摇晃
-      window.addEventListener('shakePanel', handleShake);
-      return () => window.removeEventListener('shakePanel', handleShake);
-    }
-  }, [onShake]);
+    const handleShake = () => {
+      console.log('摇晃事件被触发');
+      setIsShaking(true);
+      setTimeout(() => {
+        setIsShaking(false);
+        console.log('摇晃动画结束');
+      }, 600);
+    };
+    
+    // 监听父组件触发的摇晃
+    window.addEventListener('shakePanel', handleShake);
+    return () => window.removeEventListener('shakePanel', handleShake);
+  }, []);
 
   const handleCall = (phone: string, record?: CallHistory) => {
     console.log('拨打电话:', phone);
@@ -165,6 +167,7 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
   return (
     <div
       ref={panelRef}
+      className={isShaking ? 'panel-shake' : ''}
       style={{
         position: 'fixed',
         left: position.x,
@@ -173,13 +176,13 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
         height: isMinimized ? '50px' : '480px',
         backgroundColor: 'white',
         borderRadius: '8px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-        border: '1px solid #d9d9d9',
+        boxShadow: isShaking ? '0 8px 24px rgba(255,0,0,0.3)' : '0 8px 24px rgba(0,0,0,0.12)',
+        border: isShaking ? '2px solid #ff4d4f' : '1px solid #d9d9d9',
         zIndex: 2000,
         userSelect: 'none',
         overflow: 'hidden',
-        transition: 'height 0.3s ease',
-        animation: isShaking ? 'shake 0.6s ease-in-out' : 'none'
+        transition: isShaking ? 'none' : 'height 0.3s ease',
+        transform: isShaking ? 'translateX(0)' : 'translateX(0)'
       }}
     >
       {/* 标题栏 */}
@@ -402,10 +405,14 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
       
       {/* CSS 动画样式 */}
       <style>{`
+        .panel-shake {
+          animation: shake 0.6s ease-in-out !important;
+        }
+        
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-          20%, 40%, 60%, 80% { transform: translateX(8px); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+          20%, 40%, 60%, 80% { transform: translateX(10px); }
         }
       `}</style>
     </div>
