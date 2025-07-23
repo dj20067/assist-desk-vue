@@ -8,6 +8,7 @@ interface OutboundCallPanelProps {
   visible: boolean;
   onClose: () => void;
   onShake?: () => void;
+  onCallStateChange?: (state: 'idle' | 'calling' | 'connected') => void;
 }
 
 interface CallHistory {
@@ -20,7 +21,7 @@ interface CallHistory {
   status: 'completed' | 'missed' | 'busy';
 }
 
-const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose, onShake }) => {
+const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose, onShake, onCallStateChange }) => {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -105,11 +106,13 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
       phone: phone
     });
     setCallState('calling');
+    onCallStateChange?.('calling');
     setPhoneNumber('');
     
     // 模拟连接过程
     setTimeout(() => {
       setCallState('connected');
+      onCallStateChange?.('connected');
       // 开始计时
       const timer = setInterval(() => {
         setCallDuration(prev => prev + 1);
@@ -122,6 +125,7 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
 
   const handleHangup = () => {
     setCallState('idle');
+    onCallStateChange?.('idle');
     setCurrentCall(null);
     setCallDuration(0);
     if ((window as any).callTimer) {

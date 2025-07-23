@@ -8,6 +8,7 @@ const { Header } = Layout;
 const { Text } = Typography;
 
 export type OnlineStatus = 'online' | 'offline' | 'break';
+export type CallState = 'idle' | 'calling' | 'connected';
 
 interface TopNavigationBarProps {
   onStatusChange?: (status: OnlineStatus) => void;
@@ -16,6 +17,7 @@ interface TopNavigationBarProps {
 const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) => {
   const [status, setStatus] = useState<OnlineStatus>('online');
   const [showOutboundPanel, setShowOutboundPanel] = useState(false);
+  const [callState, setCallState] = useState<CallState>('idle');
 
   const handleStatusChange = (value: OnlineStatus) => {
     setStatus(value);
@@ -45,6 +47,28 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
         return '#faad14';
       default:
         return '#52c41a';
+    }
+  };
+
+  const getCallStateColor = (state: CallState) => {
+    switch (state) {
+      case 'calling':
+        return '#1890ff';
+      case 'connected':
+        return '#52c41a';
+      default:
+        return '#1890ff';
+    }
+  };
+
+  const getCallStateText = (state: CallState) => {
+    switch (state) {
+      case 'calling':
+        return '呼叫中';
+      case 'connected':
+        return '通话中';
+      default:
+        return '外呼';
     }
   };
 
@@ -80,7 +104,11 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
           icon={<PhoneOutlined />} 
           type="primary"
           size="small"
-          style={{ minWidth: 'auto' }}
+          style={{ 
+            minWidth: 'auto', 
+            backgroundColor: getCallStateColor(callState),
+            borderColor: getCallStateColor(callState)
+          }}
           className="outbound-call-btn"
           onClick={() => {
             if (showOutboundPanel) {
@@ -94,7 +122,24 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
             }
           }}
         >
-          <span className="btn-text">外呼</span>
+          <span className="btn-text">{getCallStateText(callState)}</span>
+          {callState === 'connected' && (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 1, marginLeft: 4 }}>
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: '2px',
+                    height: '8px',
+                    backgroundColor: 'white',
+                    borderRadius: '1px',
+                    animation: `soundWave 1.4s ease-in-out infinite`,
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </Button>
         
         <Space align="center" style={{ whiteSpace: 'nowrap' }}>
@@ -155,7 +200,16 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
       <OutboundCallPanel 
         visible={showOutboundPanel}
         onClose={() => setShowOutboundPanel(false)}
+        onCallStateChange={setCallState}
       />
+      
+      {/* CSS 动画样式 */}
+      <style>{`
+        @keyframes soundWave {
+          0%, 100% { height: 4px; }
+          50% { height: 12px; }
+        }
+      `}</style>
     </Header>
   );
 };
