@@ -478,6 +478,15 @@ const CustomerServiceWorkspace: React.FC = () => {
                 <Text type="secondary">公司：</Text>
                 <Text>某某科技有限公司</Text>
               </div>
+              <div className="info-item">
+                <Text type="secondary">标签：</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Tag color="blue">KA客户</Tag>
+                  <Tag color="green">有证书</Tag>
+                  <Tag color="orange">企业版</Tag>
+                  <Tag color="purple">重点客户</Tag>
+                </div>
+              </div>
               <Divider />
               <div className="info-item">
                 <Text type="secondary">备注：</Text>
