@@ -60,6 +60,30 @@ const CustomerServiceWorkspace: React.FC = () => {
     solution: ''
   });
 
+  // 播放通知音效
+  const playNotificationSound = () => {
+    try {
+      // 创建音频上下文并播放通知音
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+      console.log('无法播放通知音效:', error);
+    }
+  };
+
   // 模拟转接申请数据
   const transferRequests = [
     {
@@ -91,6 +115,9 @@ const CustomerServiceWorkspace: React.FC = () => {
       const randomRequest = transferRequests[Math.floor(Math.random() * transferRequests.length)];
       setCurrentTransferRequest(randomRequest);
       setTransferNotificationVisible(true);
+      
+      // 播放通知音效
+      playNotificationSound();
     }, 10000);
 
     return () => clearInterval(interval);
