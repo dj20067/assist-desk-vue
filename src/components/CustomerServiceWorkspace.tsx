@@ -1110,7 +1110,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             </div>
           }
           trigger="hover"
-          placement="topRight"
+          placement="top"
           overlayStyle={{ zIndex: 1002 }}
         >
           <div 
