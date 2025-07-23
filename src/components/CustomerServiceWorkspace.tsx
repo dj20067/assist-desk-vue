@@ -66,6 +66,34 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('waiting');
   const [inputMessage, setInputMessage] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      type: 'text',
+      content: '您好，我需要咨询一下RPA流程的问题',
+      sender: 'user',
+      timestamp: '10:30'
+    },
+    {
+      id: '2',
+      type: 'text',
+      content: '您好！我是客服小王，很高兴为您服务。请详细描述一下您遇到的问题。',
+      sender: 'agent',
+      timestamp: '10:31'
+    },
+    {
+      id: '3',
+      type: 'code',
+      content: `function processData(data) {
+  return data.map(item => ({
+    ...item,
+    processed: true
+  }));
+}`,
+      sender: 'user',
+      timestamp: '10:32'
+    }
+  ]);
 
   // 常用语数据
   const commonPhrases = [
@@ -164,34 +192,6 @@ const CustomerServiceWorkspace: React.FC = () => {
     }
   ];
 
-  const messages: Message[] = [
-    {
-      id: '1',
-      type: 'text',
-      content: '您好，我需要咨询一下RPA流程的问题',
-      sender: 'user',
-      timestamp: '10:30'
-    },
-    {
-      id: '2',
-      type: 'text',
-      content: '您好！我是客服小王，很高兴为您服务。请详细描述一下您遇到的问题。',
-      sender: 'agent',
-      timestamp: '10:31'
-    },
-    {
-      id: '3',
-      type: 'code',
-      content: `function processData(data) {
-  return data.map(item => ({
-    ...item,
-    processed: true
-  }));
-}`,
-      sender: 'user',
-      timestamp: '10:32'
-    }
-  ];
 
   const getConversationsByStatus = (status: string) => {
     return conversations.filter(conv => conv.status === status);
