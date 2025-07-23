@@ -206,6 +206,22 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
           <Text style={{ color: 'white', fontWeight: 'bold' }}>
             {callState === 'idle' ? '外呼面板' : callState === 'calling' ? '呼叫中...' : '通话中'}
           </Text>
+          {callState === 'connected' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginLeft: 8 }}>
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="sound-wave-bar"
+                  style={{
+                    width: '3px',
+                    backgroundColor: 'white',
+                    borderRadius: '1px',
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <Button
@@ -414,6 +430,16 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
           0%, 100% { transform: translateX(0); }
           10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
           20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        
+        .sound-wave-bar {
+          height: 12px;
+          animation: soundWave 1.4s ease-in-out infinite;
+        }
+        
+        @keyframes soundWave {
+          0%, 100% { height: 4px; }
+          50% { height: 16px; }
         }
       `}</style>
     </div>
