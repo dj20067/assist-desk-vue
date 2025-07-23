@@ -1,0 +1,350 @@
+.customer-service-workspace {
+  height: 100vh;
+  background: #f5f5f5;
+
+  .conversation-sidebar {
+    background: white;
+    border-right: 1px solid #e8e8e8;
+
+    .ant-tabs {
+      .ant-tabs-tab {
+        font-weight: 500;
+      }
+    }
+
+    .conversation-list {
+      height: calc(100vh - 46px);
+      overflow-y: auto;
+      padding: 0;
+
+      .conversation-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          background: #f5f5f5;
+        }
+
+        &.selected {
+          background: #e6f7ff;
+          border-right: 3px solid #1890ff;
+        }
+
+        &.conversation-warning {
+          background: #fff7e6;
+          border-left: 3px solid #faad14;
+        }
+
+        &.conversation-urgent {
+          background: #fff2f0;
+          border-left: 3px solid #ff4d4f;
+        }
+
+        .conversation-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+
+          .wait-time {
+            font-size: 12px;
+            color: #faad14;
+          }
+        }
+
+        .ant-list-item-meta-description {
+          margin-top: 4px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  .chat-content {
+    display: flex;
+    flex-direction: column;
+    background: white;
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e8e8e8;
+      background: white;
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .user-details {
+          .user-tags {
+            margin-top: 4px;
+
+            .ant-tag {
+              margin-right: 4px;
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #fafafa;
+
+      .message {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+
+        &.message-user {
+          align-items: flex-end;
+
+          .message-content {
+            background: #1890ff;
+            color: white;
+            border-radius: 12px 12px 4px 12px;
+            padding: 8px 12px;
+            max-width: 70%;
+            word-break: break-word;
+          }
+        }
+
+        &.message-agent {
+          align-items: flex-start;
+
+          .message-content {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px 12px 12px 4px;
+            padding: 8px 12px;
+            max-width: 70%;
+            word-break: break-word;
+          }
+        }
+
+        .message-time {
+          margin-top: 4px;
+          font-size: 12px;
+        }
+
+        .code-block {
+          background: #f6f8fa;
+          border: 1px solid #e1e4e8;
+          border-radius: 6px;
+          overflow: hidden;
+
+          .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f1f3f4;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 12px;
+            color: #586069;
+          }
+
+          pre {
+            margin: 0;
+            padding: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-x: auto;
+            background: #f6f8fa;
+          }
+        }
+      }
+    }
+
+    .chat-input {
+      border-top: 1px solid #e8e8e8;
+      background: white;
+
+      .input-toolbar {
+        padding: 8px 16px;
+        border-bottom: 1px solid #f0f0f0;
+
+        .ant-btn {
+          border: none;
+          box-shadow: none;
+          color: #666;
+
+          &:hover {
+            color: #1890ff;
+          }
+        }
+      }
+
+      .input-area {
+        display: flex;
+        align-items: flex-end;
+        padding: 12px 16px;
+        gap: 12px;
+
+        .ant-input {
+          border: none;
+          box-shadow: none;
+          resize: none;
+
+          &:focus {
+            border: none;
+            box-shadow: none;
+          }
+        }
+
+        .send-button {
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+
+  .info-sidebar {
+    background: white;
+    border-left: 1px solid #e8e8e8;
+
+    .ant-collapse {
+      border: none;
+
+      .ant-collapse-item {
+        border-bottom: 1px solid #f0f0f0;
+
+        .ant-collapse-header {
+          padding: 16px;
+          font-weight: 500;
+        }
+
+        .ant-collapse-content-box {
+          padding: 0 16px 16px;
+        }
+      }
+    }
+
+    .customer-info {
+      .info-item {
+        display: flex;
+        margin-bottom: 8px;
+        align-items: flex-start;
+
+        > span:first-child {
+          min-width: 60px;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .app-logs {
+      .ant-list-item {
+        padding: 4px 0;
+        border: none;
+      }
+
+      .log-search {
+        .log-list {
+          max-height: 200px;
+          overflow-y: auto;
+
+          .ant-timeline-item-content {
+            font-size: 13px;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+
+    .service-history {
+      .history-item {
+        width: 100%;
+
+        .history-date {
+          margin-bottom: 4px;
+        }
+
+        .history-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          > span:first-child {
+            flex: 1;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+
+  &:hover {
+    background: #a8a8a8;
+  }
+}
+
+// 响应式设计
+@media (max-width: 1200px) {
+  .customer-service-workspace {
+    .conversation-sidebar {
+      width: 25% !important;
+    }
+
+    .info-sidebar {
+      width: 35% !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .customer-service-workspace {
+    .conversation-sidebar {
+      width: 30% !important;
+    }
+
+    .info-sidebar {
+      width: 40% !important;
+    }
+
+    .chat-content {
+      .chat-header {
+        padding: 12px 16px;
+
+        .ant-space {
+          .ant-btn span {
+            display: none;
+          }
+        }
+      }
+
+      .chat-messages {
+        padding: 16px;
+
+        .message .message-content {
+          max-width: 85%;
+        }
+      }
+    }
+  }
+}
