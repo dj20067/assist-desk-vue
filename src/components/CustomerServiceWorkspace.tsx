@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover } from 'antd';
+import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
 import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined } from '@ant-design/icons';
 import './CustomerServiceWorkspace.less';
 const {
@@ -44,6 +44,13 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [inputMessage, setInputMessage] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
   const [historyModalVisible, setHistoryModalVisible] = useState<boolean>(false);
+  const [serviceSummaryModalVisible, setServiceSummaryModalVisible] = useState<boolean>(false);
+  const [serviceSummaryForm, setServiceSummaryForm] = useState({
+    problemStatus: '',
+    consultType: '',
+    problemDescription: '',
+    solution: ''
+  });
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([{
     id: '1',
@@ -231,6 +238,37 @@ const CustomerServiceWorkspace: React.FC = () => {
     const newMessage = inputMessage + emoji;
     setInputMessage(newMessage);
   };
+
+  const handleServiceSummaryFormChange = (field: string, value: string) => {
+    setServiceSummaryForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleServiceSummarySave = () => {
+    console.log('保存服务小计:', serviceSummaryForm);
+    // 这里可以添加保存逻辑
+    setServiceSummaryModalVisible(false);
+    // 重置表单
+    setServiceSummaryForm({
+      problemStatus: '',
+      consultType: '',
+      problemDescription: '',
+      solution: ''
+    });
+  };
+
+  const handleServiceSummaryCancel = () => {
+    setServiceSummaryModalVisible(false);
+    // 重置表单
+    setServiceSummaryForm({
+      problemStatus: '',
+      consultType: '',
+      problemDescription: '',
+      solution: ''
+    });
+  };
   const renderEmojiContent = () => <div style={{
     width: 300,
     maxHeight: 200,
@@ -349,6 +387,7 @@ const CustomerServiceWorkspace: React.FC = () => {
           <Space>
             <Button icon={<SwapOutlined />}>转接</Button>
             <Button icon={<PhoneOutlined />}>外呼</Button>
+            <Button onClick={() => setServiceSummaryModalVisible(true)}>服务小计</Button>
             <Button icon={<FileTextOutlined />} type="primary">
               新建工单
             </Button>
@@ -627,6 +666,76 @@ const CustomerServiceWorkspace: React.FC = () => {
               {historyMessages.map(renderMessage)}
             </div>
           </div>}
+      </Modal>
+
+      {/* 服务小计模态窗口 */}
+      <Modal 
+        title="服务小计" 
+        open={serviceSummaryModalVisible} 
+        onCancel={handleServiceSummaryCancel}
+        footer={null}
+        width={600}
+      >
+        <div style={{ padding: '16px 0' }}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong>问题解决状态：</Text>
+            <Select
+              style={{ width: '100%', marginTop: 8 }}
+              placeholder="请选择问题解决状态"
+              value={serviceSummaryForm.problemStatus}
+              onChange={(value) => handleServiceSummaryFormChange('problemStatus', value)}
+            >
+              <Select.Option value="已解决">已解决</Select.Option>
+              <Select.Option value="未解决">未解决</Select.Option>
+              <Select.Option value="解决中">解决中</Select.Option>
+            </Select>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <Text strong>咨询分类：</Text>
+            <Select
+              style={{ width: '100%', marginTop: 8 }}
+              placeholder="请选择咨询分类"
+              value={serviceSummaryForm.consultType}
+              onChange={(value) => handleServiceSummaryFormChange('consultType', value)}
+            >
+              <Select.Option value="元素问题">元素问题</Select.Option>
+              <Select.Option value="网页自动化">网页自动化</Select.Option>
+              <Select.Option value="手机自动化">手机自动化</Select.Option>
+              <Select.Option value="桌面软件自动化">桌面软件自动化</Select.Option>
+              <Select.Option value="其他">其他</Select.Option>
+            </Select>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <Text strong>问题描述：</Text>
+            <TextArea
+              style={{ marginTop: 8 }}
+              rows={4}
+              placeholder="请详细描述遇到的问题..."
+              value={serviceSummaryForm.problemDescription}
+              onChange={(e) => handleServiceSummaryFormChange('problemDescription', e.target.value)}
+            />
+          </div>
+
+          <div style={{ marginBottom: 24 }}>
+            <Text strong>解决方案：</Text>
+            <TextArea
+              style={{ marginTop: 8 }}
+              rows={4}
+              placeholder="请详细描述解决方案..."
+              value={serviceSummaryForm.solution}
+              onChange={(e) => handleServiceSummaryFormChange('solution', e.target.value)}
+            />
+          </div>
+
+          <div style={{ textAlign: 'right', borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
+            <Space>
+              <Button onClick={handleServiceSummaryCancel}>取消</Button>
+              <Button type="primary" onClick={handleServiceSummarySave}>保存</Button>
+            </Space>
+          </div>
+        </div>
       </Modal>
     </Layout>;
 };
