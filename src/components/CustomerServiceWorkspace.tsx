@@ -705,7 +705,7 @@ const CustomerServiceWorkspace: React.FC = () => {
             <div style={{ marginBottom: 16 }}>
               <Text strong>会话记录：</Text>
             </div>
-            <div className="chat-messages" style={{ maxHeight: 400, overflow: 'auto', background: '#fafafa', padding: 20, borderRadius: 8 }}>
+            <div className="chat-messages" style={{ maxHeight: 400, overflow: 'auto', padding: 20, borderRadius: 8 }}>
               <div className={`message message-user`}>
                 <div className="message-content">
                   <Text style={{ whiteSpace: 'pre-wrap' }}>您好，我遇到了RPA流程配置的问题，能帮我看看吗？</Text>
