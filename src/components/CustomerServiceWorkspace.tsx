@@ -487,7 +487,7 @@ const CustomerServiceWorkspace: React.FC = () => {
 
       {/* 右侧信息区 */}
       <Sider width="30%" className="info-sidebar">
-        <Collapse defaultActiveKey={['customer', 'app', 'history']} ghost>
+        <Collapse defaultActiveKey={['customer', 'app', 'history', 'moreInfo']} ghost>
           <Panel header="客户信息" key="customer">
             <div className="customer-info">
               <div className="info-item">
@@ -598,6 +598,75 @@ const CustomerServiceWorkspace: React.FC = () => {
                   </List.Item>
                 )}
               />
+            </div>
+          </Panel>
+
+          <Panel header="更多信息" key="moreInfo">
+            <div className="more-info">
+              <div className="info-item">
+                <Text type="secondary">客户状态：</Text>
+                <Text>价值稳定阶段</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">证书状态：</Text>
+                <Tag color="green">学院证书</Tag>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">RPA合作类型：</Text>
+                <Text>-</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">RPA合作状态：</Text>
+                <Tag color="purple">未签约组织</Tag>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约年份：</Text>
+                <Text>-</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约季度：</Text>
+                <Text>-</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户优先级：</Text>
+                <Text>低</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">签约时间距今月份：</Text>
+                <Text>-1</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户成功：</Text>
+                <Text>-</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">技术支持：</Text>
+                <Text>惠文</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">服务小组：</Text>
+                <Tag color="orange">浙江业务组-新签组</Tag>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">健康指标：</Text>
+                <Text>0</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">电脑版本类型：</Text>
+                <Text>windows</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">客户端版本：</Text>
+                <Text>5.29.6</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">应用载图：</Text>
+                <Text>-</Text>
+              </div>
+              <div className="info-item">
+                <Text type="secondary">当天日志地址：</Text>
+                <Text>-</Text>
+              </div>
             </div>
           </Panel>
         </Collapse>
