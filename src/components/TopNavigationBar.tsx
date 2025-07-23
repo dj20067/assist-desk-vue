@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Button, Select, Space, Typography } from 'antd';
 import { PhoneOutlined } from '@ant-design/icons';
 import OutboundCallPanel from './OutboundCallPanel';
-import './TopNavigationBar.css';
+import './TopNavigationBar.less';
 
 const { Header } = Layout;
 const { Text } = Typography;
