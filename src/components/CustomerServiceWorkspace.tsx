@@ -49,6 +49,8 @@ interface ConversationItem {
   unreadCount: number;
   status: 'waiting' | 'serving' | 'completed';
   priority: 'normal' | 'warning' | 'urgent';
+  enterpriseScale: 'SKA' | 'KA' | 'SMB';
+  hasCertificate: boolean;
 }
 
 interface Message {
@@ -112,7 +114,9 @@ const CustomerServiceWorkspace: React.FC = () => {
       waitTime: 180,
       unreadCount: 3,
       status: 'waiting',
-      priority: 'normal'
+      priority: 'normal',
+      enterpriseScale: 'KA',
+      hasCertificate: true
     },
     {
       id: '2',
@@ -122,7 +126,9 @@ const CustomerServiceWorkspace: React.FC = () => {
       waitTime: 240,
       unreadCount: 0,
       status: 'serving',
-      priority: 'warning'
+      priority: 'warning',
+      enterpriseScale: 'SKA',
+      hasCertificate: false
     },
     {
       id: '3',
@@ -132,7 +138,9 @@ const CustomerServiceWorkspace: React.FC = () => {
       waitTime: 360,
       unreadCount: 0,
       status: 'serving',
-      priority: 'urgent'
+      priority: 'urgent',
+      enterpriseScale: 'SMB',
+      hasCertificate: true
     }
   ];
 
@@ -309,9 +317,17 @@ const CustomerServiceWorkspace: React.FC = () => {
           </div>
         }
         description={
-          <Text type="secondary" ellipsis>
-            {item.lastMessage}
-          </Text>
+          <div>
+            <div style={{ marginBottom: 4 }}>
+              <Tag color="blue">{item.enterpriseScale}</Tag>
+              <Tag color={item.hasCertificate ? "green" : "orange"}>
+                {item.hasCertificate ? "有证书" : "无证书"}
+              </Tag>
+            </div>
+            <Text type="secondary" ellipsis>
+              {item.lastMessage}
+            </Text>
+          </div>
         }
       />
     </List.Item>
