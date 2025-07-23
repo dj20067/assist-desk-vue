@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Tabs, List, Avatar, Badge, Button, Input, Space, Tag, Collapse, Typography, Divider, Upload, Modal, Image, Timeline, Tooltip, Popover, Select } from 'antd';
 import { MessageOutlined, PhoneOutlined, FileTextOutlined, UserOutlined, SearchOutlined, PictureOutlined, SmileOutlined, SendOutlined, SwapOutlined, CopyOutlined, ExpandOutlined } from '@ant-design/icons';
 import './CustomerServiceWorkspace.less';
@@ -47,6 +47,8 @@ const CustomerServiceWorkspace: React.FC = () => {
   const [serviceSummaryModalVisible, setServiceSummaryModalVisible] = useState<boolean>(false);
   const [transferModalVisible, setTransferModalVisible] = useState<boolean>(false);
   const [endSessionModalVisible, setEndSessionModalVisible] = useState<boolean>(false);
+  const [transferNotificationVisible, setTransferNotificationVisible] = useState<boolean>(false);
+  const [currentTransferRequest, setCurrentTransferRequest] = useState<any>(null);
   const [transferActiveTab, setTransferActiveTab] = useState<string>('customer-service');
   const [transferSearchValue, setTransferSearchValue] = useState<string>('');
   const [transferProblemDesc, setTransferProblemDesc] = useState<string>('');
@@ -57,6 +59,42 @@ const CustomerServiceWorkspace: React.FC = () => {
     problemDescription: '',
     solution: ''
   });
+
+  // 模拟转接申请数据
+  const transferRequests = [
+    {
+      id: '1',
+      fromEngineer: '技术支持-小李',
+      customer: '王小刚',
+      reason: '客户咨询高级功能配置问题，需要专业工程师协助',
+      waitTime: '2分钟前'
+    },
+    {
+      id: '2', 
+      fromEngineer: '售前支持-小张',
+      customer: '刘小华',
+      reason: '客户询问企业版功能详情，需要技术确认',
+      waitTime: '5分钟前'
+    },
+    {
+      id: '3',
+      fromEngineer: '客服-小王',
+      customer: '陈小明',
+      reason: '流程执行异常，需要工程师排查问题',
+      waitTime: '1分钟前'
+    }
+  ];
+
+  // 每10秒弹出转接申请通知
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomRequest = transferRequests[Math.floor(Math.random() * transferRequests.length)];
+      setCurrentTransferRequest(randomRequest);
+      setTransferNotificationVisible(true);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([{
     id: '1',
@@ -304,6 +342,18 @@ const CustomerServiceWorkspace: React.FC = () => {
 
   const handleEndSessionCancel = () => {
     setEndSessionModalVisible(false);
+  };
+
+  const handleAcceptTransfer = () => {
+    console.log('接受转接:', currentTransferRequest);
+    setTransferNotificationVisible(false);
+    setCurrentTransferRequest(null);
+  };
+
+  const handleRejectTransfer = () => {
+    console.log('拒绝转接:', currentTransferRequest);
+    setTransferNotificationVisible(false);
+    setCurrentTransferRequest(null);
   };
   const renderEmojiContent = () => <div style={{
     width: 300,
@@ -907,6 +957,73 @@ const CustomerServiceWorkspace: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* 转接申请通知弹窗 */}
+      {transferNotificationVisible && currentTransferRequest && (
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            width: '350px',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            border: '1px solid #d9d9d9',
+            zIndex: 1000,
+            animation: 'fadeInUp 0.3s ease-out'
+          }}
+        >
+          <div style={{ 
+            padding: '16px',
+            borderBottom: '1px solid #f0f0f0',
+            backgroundColor: '#fafafa',
+            borderRadius: '8px 8px 0 0'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text strong style={{ color: '#1890ff' }}>转接申请</Text>
+              <Button 
+                type="text" 
+                size="small" 
+                onClick={() => setTransferNotificationVisible(false)}
+                style={{ padding: 0, minWidth: 'auto' }}
+              >
+                ×
+              </Button>
+            </div>
+          </div>
+          
+          <div style={{ padding: '16px' }}>
+            <div style={{ marginBottom: 12 }}>
+              <Text strong>{currentTransferRequest.fromEngineer}</Text>
+              <Text type="secondary" style={{ marginLeft: 8 }}>
+                {currentTransferRequest.waitTime}
+              </Text>
+            </div>
+            
+            <div style={{ marginBottom: 8 }}>
+              <Text type="secondary">客户：</Text>
+              <Text>{currentTransferRequest.customer}</Text>
+            </div>
+            
+            <div style={{ marginBottom: 16 }}>
+              <Text type="secondary">原因：</Text>
+              <div style={{ marginTop: 4 }}>
+                <Text>{currentTransferRequest.reason}</Text>
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <Button size="small" onClick={handleRejectTransfer}>
+                拒绝
+              </Button>
+              <Button type="primary" size="small" onClick={handleAcceptTransfer}>
+                接受
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>;
 };
 export default CustomerServiceWorkspace;
