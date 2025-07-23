@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, Input, List, Typography, Space, Tag, Avatar, Divider, Progress } from 'antd';
-import { PhoneOutlined, CloseOutlined, MinusOutlined, DragOutlined, UserOutlined } from '@ant-design/icons';
+import { PhoneOutlined, CloseOutlined, MinusOutlined, DragOutlined, UserOutlined, ExpandOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -211,9 +211,10 @@ const OutboundCallPanel: React.FC<OutboundCallPanelProps> = ({ visible, onClose,
           <Button
             type="text"
             size="small"
-            icon={<MinusOutlined />}
+            icon={isMinimized ? <ExpandOutlined /> : <MinusOutlined />}
             onClick={() => setIsMinimized(!isMinimized)}
             style={{ color: 'white' }}
+            title={isMinimized ? "展开面板" : "折叠面板"}
           />
           <Button
             type="text"
