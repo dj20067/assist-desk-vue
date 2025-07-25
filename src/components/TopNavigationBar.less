@@ -13,13 +13,27 @@
   box-sizing: border-box;
 }
 
-.workspace-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #1890ff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.header-left {
+  .workspace-selector {
+    .ant-radio-group-solid .ant-radio-button-wrapper {
+      font-size: 13px;
+      height: 32px;
+      line-height: 30px;
+      border-radius: 4px;
+      
+      &:first-child {
+        border-radius: 4px 0 0 4px;
+      }
+      
+      &:last-child {
+        border-radius: 0 4px 4px 0;
+      }
+      
+      .anticon {
+        margin-right: 4px;
+      }
+    }
+  }
 }
 
 .header-controls {
