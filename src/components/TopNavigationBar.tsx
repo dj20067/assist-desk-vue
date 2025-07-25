@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Button, Select, Space, Typography, Radio } from 'antd';
-import { PhoneOutlined, CustomerServiceOutlined, CalendarOutlined } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Layout, Button, Select, Space, Typography } from 'antd';
+import { PhoneOutlined } from '@ant-design/icons';
 import OutboundCallPanel from './OutboundCallPanel';
 import './TopNavigationBar.less';
 
@@ -15,16 +14,11 @@ interface TopNavigationBarProps {
   onStatusChange?: (status: OnlineStatus) => void;
 }
 
-type WorkbenchType = 'customer-service' | 'appointment-ticket';
-
 const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [status, setStatus] = useState<OnlineStatus>('online');
   const [showOutboundPanel, setShowOutboundPanel] = useState(false);
   const [callState, setCallState] = useState<CallState>('idle');
   const [quickCallData, setQuickCallData] = useState<{ phone: string; name: string } | null>(null);
-  const [currentWorkbench, setCurrentWorkbench] = useState<WorkbenchType>('customer-service');
 
   // 监听直接呼叫事件
   useEffect(() => {
@@ -41,15 +35,6 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
     window.addEventListener('directCall', handleDirectCall as EventListener);
     return () => window.removeEventListener('directCall', handleDirectCall as EventListener);
   }, []);
-
-  // 根据当前路径设置工作台类型
-  useEffect(() => {
-    if (location.pathname === '/appointment-ticket') {
-      setCurrentWorkbench('appointment-ticket');
-    } else {
-      setCurrentWorkbench('customer-service');
-    }
-  }, [location.pathname]);
 
   const handleStatusChange = (value: OnlineStatus) => {
     setStatus(value);
@@ -104,34 +89,10 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
     }
   };
 
-  // 处理工作台切换
-  const handleWorkbenchChange = (workbench: WorkbenchType) => {
-    setCurrentWorkbench(workbench);
-    if (workbench === 'appointment-ticket') {
-      navigate('/appointment-ticket');
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
     <Header className="top-navigation-header">
-      <div className="header-left">
-        <div className="workspace-selector">
-          <Radio.Group 
-            value={currentWorkbench} 
-            onChange={(e) => handleWorkbenchChange(e.target.value)}
-            buttonStyle="solid"
-            size="small"
-          >
-            <Radio.Button value="customer-service">
-              <CustomerServiceOutlined /> 客服工作台
-            </Radio.Button>
-            <Radio.Button value="appointment-ticket">
-              <CalendarOutlined /> 预约工单
-            </Radio.Button>
-          </Radio.Group>
-        </div>
+      <div className="workspace-title">
+        客服工作台
       </div>
       
       <Space size="large" className="header-controls">
