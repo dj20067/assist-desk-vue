@@ -92,14 +92,7 @@ const TopNavigationBar: React.FC<TopNavigationBarProps> = ({ onStatusChange }) =
   return (
     <Header className="top-navigation-header">
       <div className="workspace-title">
-        <Space>
-          <Button type="link" onClick={() => window.location.href = '/'}>
-            客服工作台
-          </Button>
-          <Button type="link" onClick={() => window.location.href = '/tickets'}>
-            工单管理
-          </Button>
-        </Space>
+        客服工作台
       </div>
       
       <Space size="large" className="header-controls">

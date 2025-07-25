@@ -4,7 +4,6 @@ import { ConfigProvider, Layout, message } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import TopNavigationBar, { OnlineStatus } from "./components/TopNavigationBar";
 import Index from "./pages/Index";
-import AppointmentTickets from "./pages/AppointmentTickets";
 import NotFound from "./pages/NotFound";
 import { useState } from "react";
 
@@ -25,7 +24,6 @@ const App = () => {
               <TopNavigationBar onStatusChange={handleStatusChange} />
               <Routes>
                 <Route path="/" element={<Index onlineStatus={onlineStatus} />} />
-                <Route path="/tickets" element={<AppointmentTickets onlineStatus={onlineStatus} />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
