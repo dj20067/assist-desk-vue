@@ -1,0 +1,228 @@
+.info-sidebar {
+  background: white;
+  border-left: 1px solid #e8e8e8;
+  overflow-y: auto;
+
+  .info-panels {
+    height: 100%;
+
+    .ant-collapse-item {
+      .ant-collapse-header {
+        font-weight: 500;
+        color: #262626;
+        padding: 12px 16px;
+      }
+
+      .ant-collapse-content {
+        .ant-collapse-content-box {
+          padding: 0 16px 16px 16px;
+        }
+      }
+    }
+  }
+
+  // 客户信息样式
+  .customer-info {
+    .info-item {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .ant-typography {
+        margin: 0;
+      }
+    }
+
+    .customer-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .customer-details {
+        flex: 1;
+
+        h4 {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          font-weight: 500;
+          color: #262626;
+        }
+
+        p {
+          margin: 4px 0;
+          font-size: 13px;
+          color: #595959;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+      }
+    }
+  }
+
+  // 应用与日志样式
+  .app-logs {
+    .ant-typography-title {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .app-item {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+
+      &:hover {
+        background-color: #f0f8ff;
+        border-color: #1890ff;
+        transform: translateX(2px);
+      }
+    }
+
+    .log-search {
+      .log-list {
+        max-height: 200px;
+        overflow-y: auto;
+
+        .ant-timeline ol {
+          padding-top: 16px !important;
+        }
+
+        .ant-timeline-item-content {
+          font-size: 13px;
+        }
+
+        .log-entry {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .log-timestamp {
+            font-size: 11px;
+            color: #8c8c8c;
+          }
+
+          .log-level {
+            margin: 0;
+          }
+
+          .log-message {
+            font-size: 13px;
+            color: #595959;
+          }
+        }
+      }
+    }
+  }
+
+  // 服务历史样式
+  .service-history {
+    .history-item {
+      width: 100%;
+
+      .history-date {
+        margin-bottom: 4px;
+      }
+
+      .history-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+  }
+
+  // 更多信息样式
+  .more-info {
+    .info-item {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // 工单操作样式
+  .ticket-operations {
+    .operation-item {
+      margin-bottom: 16px;
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: #595959;
+        font-weight: 500;
+      }
+
+      .tags-container {
+        .ant-tag {
+          margin-bottom: 6px;
+        }
+      }
+    }
+  }
+
+  // 工单信息样式
+  .ticket-meta-info {
+    .meta-item {
+      margin-bottom: 12px;
+
+      label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        color: #595959;
+        font-weight: 500;
+      }
+
+      span {
+        font-size: 13px;
+        color: #262626;
+      }
+    }
+  }
+
+  // 空状态样式
+  .no-info {
+    padding: 24px;
+    text-align: center;
+
+    p {
+      color: #8c8c8c;
+      margin: 0;
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 1200px) {
+  .info-sidebar {
+    width: 250px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .info-sidebar {
+    display: none !important;
+  }
+}

@@ -40,6 +40,7 @@ import {
   TagOutlined
 } from '@ant-design/icons';
 import { OnlineStatus } from './TopNavigationBar';
+import InfoSidebar, { InfoPanelItem } from './InfoSidebar';
 import './AppointmentTicketWorkspace.less';
 
 const { Sider, Content } = Layout;
@@ -294,6 +295,119 @@ const AppointmentTicketWorkspace: React.FC<AppointmentTicketWorkspaceProps> = ({
     message.success('工单状态已更新');
   };
 
+  // 生成预约工单信息面板配置
+  const generateTicketInfoPanels = (): InfoPanelItem[] => {
+    if (!selectedTicket) return [];
+    
+    return [
+      {
+        key: 'customer',
+        header: '客户信息',
+        content: (
+          <div className="customer-info">
+            <div className="customer-header">
+              <Avatar size={48} src={selectedTicket.submitter.avatar} icon={<UserOutlined />} />
+              <div className="customer-details">
+                <h4>{selectedTicket.submitter.name}</h4>
+                <p className="customer-email">
+                  <MailOutlined /> {selectedTicket.submitter.email}
+                </p>
+                <p className="customer-phone">
+                  <PhoneOutlined /> {selectedTicket.submitter.phone}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      },
+      {
+        key: 'operations',
+        header: '工单操作',
+        content: (
+          <div className="ticket-operations">
+            <div className="operation-item">
+              <label>状态:</label>
+              <Select
+                value={selectedTicket.status}
+                onChange={handleStatusChange}
+                style={{ width: '100%' }}
+              >
+                <Option value="new">新建</Option>
+                <Option value="open">处理中</Option>
+                <Option value="pending">等待中</Option>
+                <Option value="resolved">已解决</Option>
+                <Option value="closed">已关闭</Option>
+              </Select>
+            </div>
+
+            <div className="operation-item">
+              <label>优先级:</label>
+              <Select
+                value={selectedTicket.priority}
+                style={{ width: '100%' }}
+              >
+                <Option value="low">低</Option>
+                <Option value="medium">中</Option>
+                <Option value="high">高</Option>
+                <Option value="urgent">紧急</Option>
+              </Select>
+            </div>
+
+            <div className="operation-item">
+              <label>分类:</label>
+              <Select
+                value={selectedTicket.category}
+                style={{ width: '100%' }}
+              >
+                <Option value="技术支持">技术支持</Option>
+                <Option value="业务咨询">业务咨询</Option>
+                <Option value="退款问题">退款问题</Option>
+                <Option value="其他">其他</Option>
+              </Select>
+            </div>
+
+            <div className="operation-item">
+              <label>标签:</label>
+              <div className="tags-container">
+                {selectedTicket.tags.map((tag, index) => (
+                  <Tag key={index} closable>
+                    {tag}
+                  </Tag>
+                ))}
+                <Button size="small" icon={<TagOutlined />}>添加标签</Button>
+              </div>
+            </div>
+          </div>
+        )
+      },
+      {
+        key: 'info',
+        header: '工单信息',
+        content: (
+          <div className="ticket-meta-info">
+            <div className="meta-item">
+              <label>创建时间:</label>
+              <span>{selectedTicket.createdAt}</span>
+            </div>
+            <div className="meta-item">
+              <label>更新时间:</label>
+              <span>{selectedTicket.updatedAt}</span>
+            </div>
+            {selectedTicket.assignee && (
+              <div className="meta-item">
+                <label>处理人:</label>
+                <Space>
+                  <Avatar size="small" src={selectedTicket.assignee.avatar} icon={<UserOutlined />} />
+                  <span>{selectedTicket.assignee.name}</span>
+                </Space>
+              </div>
+            )}
+          </div>
+        )
+      }
+    ];
+  };
+
   return (
     <Layout className="appointment-ticket-workspace">
       {/* 左侧工单列表 */}
@@ -489,111 +603,17 @@ const AppointmentTicketWorkspace: React.FC<AppointmentTicketWorkspaceProps> = ({
       </Content>
 
       {/* 右侧信息面板 */}
-      <Sider className="info-sidebar" width={300}>
-        {selectedTicket ? (
-          <Collapse defaultActiveKey={['customer', 'operations']} className="info-panels">
-            <Panel header="客户信息" key="customer">
-              <div className="customer-info">
-                <div className="customer-header">
-                  <Avatar size={48} src={selectedTicket.submitter.avatar} icon={<UserOutlined />} />
-                  <div className="customer-details">
-                    <h4>{selectedTicket.submitter.name}</h4>
-                    <p className="customer-email">
-                      <MailOutlined /> {selectedTicket.submitter.email}
-                    </p>
-                    <p className="customer-phone">
-                      <PhoneOutlined /> {selectedTicket.submitter.phone}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Panel>
-
-            <Panel header="工单操作" key="operations">
-              <div className="ticket-operations">
-                <div className="operation-item">
-                  <label>状态:</label>
-                  <Select
-                    value={selectedTicket.status}
-                    onChange={handleStatusChange}
-                    style={{ width: '100%' }}
-                  >
-                    <Option value="new">新建</Option>
-                    <Option value="open">处理中</Option>
-                    <Option value="pending">等待中</Option>
-                    <Option value="resolved">已解决</Option>
-                    <Option value="closed">已关闭</Option>
-                  </Select>
-                </div>
-
-                <div className="operation-item">
-                  <label>优先级:</label>
-                  <Select
-                    value={selectedTicket.priority}
-                    style={{ width: '100%' }}
-                  >
-                    <Option value="low">低</Option>
-                    <Option value="medium">中</Option>
-                    <Option value="high">高</Option>
-                    <Option value="urgent">紧急</Option>
-                  </Select>
-                </div>
-
-                <div className="operation-item">
-                  <label>分类:</label>
-                  <Select
-                    value={selectedTicket.category}
-                    style={{ width: '100%' }}
-                  >
-                    <Option value="技术支持">技术支持</Option>
-                    <Option value="业务咨询">业务咨询</Option>
-                    <Option value="退款问题">退款问题</Option>
-                    <Option value="其他">其他</Option>
-                  </Select>
-                </div>
-
-                <div className="operation-item">
-                  <label>标签:</label>
-                  <div className="tags-container">
-                    {selectedTicket.tags.map((tag, index) => (
-                      <Tag key={index} closable>
-                        {tag}
-                      </Tag>
-                    ))}
-                    <Button size="small" icon={<TagOutlined />}>添加标签</Button>
-                  </div>
-                </div>
-              </div>
-            </Panel>
-
-            <Panel header="工单信息" key="info">
-              <div className="ticket-meta-info">
-                <div className="meta-item">
-                  <label>创建时间:</label>
-                  <span>{selectedTicket.createdAt}</span>
-                </div>
-                <div className="meta-item">
-                  <label>更新时间:</label>
-                  <span>{selectedTicket.updatedAt}</span>
-                </div>
-                {selectedTicket.assignee && (
-                  <div className="meta-item">
-                    <label>处理人:</label>
-                    <Space>
-                      <Avatar size="small" src={selectedTicket.assignee.avatar} icon={<UserOutlined />} />
-                      <span>{selectedTicket.assignee.name}</span>
-                    </Space>
-                  </div>
-                )}
-              </div>
-            </Panel>
-          </Collapse>
-        ) : (
+      <InfoSidebar
+        panels={generateTicketInfoPanels()}
+        defaultActiveKeys={['customer', 'operations', 'info']}
+        width={300}
+      >
+        {!selectedTicket && (
           <div className="no-info">
             <p>选择工单以查看详细信息</p>
           </div>
         )}
-      </Sider>
+      </InfoSidebar>
     </Layout>
   );
 };
