@@ -530,7 +530,8 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
       }} preview={{
         onVisibleChange: visible => !visible && setPreviewImage('')
       }} /> : <Text style={{
-        whiteSpace: 'pre-wrap'
+        whiteSpace: 'pre-wrap',
+        color: 'inherit'
       }}>{message.content}</Text>}
       </div>
       <div className="message-time">
