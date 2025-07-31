@@ -501,7 +501,7 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
           </Badge>} title={<div className="conversation-header">
             <Text strong>{item.userName}</Text>
             <Text type="secondary" className="wait-time">
-              {formatTime(item.waitTime)}
+              排队时间: {formatTime(item.waitTime)}
             </Text>
           </div>} description={<div>
             <div style={{
