@@ -32,6 +32,8 @@ interface ConversationItem {
   priority: 'normal' | 'warning' | 'urgent';
   enterpriseScale: 'SKA' | 'KA' | 'SMB';
   hasCertificate: boolean;
+  lastMessageTime: string; // 最后一条消息时间
+  endTime?: string; // 会话结束时间（仅completed状态使用）
 }
 interface Message {
   id: string;
@@ -259,7 +261,8 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
     status: 'waiting',
     priority: 'normal',
     enterpriseScale: 'KA',
-    hasCertificate: true
+    hasCertificate: true,
+    lastMessageTime: '10:28'
   }, {
     id: '2',
     userName: '李小红',
@@ -270,7 +273,8 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
     status: 'serving',
     priority: 'warning',
     enterpriseScale: 'SKA',
-    hasCertificate: false
+    hasCertificate: false,
+    lastMessageTime: '10:25'
   }, {
     id: '3',
     userName: '王小华',
@@ -281,7 +285,34 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
     status: 'serving',
     priority: 'urgent',
     enterpriseScale: 'SMB',
-    hasCertificate: true
+    hasCertificate: true,
+    lastMessageTime: '10:20'
+  }, {
+    id: '4',
+    userName: '赵小丽',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
+    lastMessage: '问题已解决，感谢！',
+    waitTime: 0,
+    unreadCount: 0,
+    status: 'completed',
+    priority: 'normal',
+    enterpriseScale: 'KA',
+    hasCertificate: true,
+    lastMessageTime: '09:45',
+    endTime: '09:50'
+  }, {
+    id: '5',
+    userName: '孙小军',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
+    lastMessage: '非常满意的服务体验',
+    waitTime: 0,
+    unreadCount: 0,
+    status: 'completed',
+    priority: 'normal',
+    enterpriseScale: 'SMB',
+    hasCertificate: false,
+    lastMessageTime: '09:15',
+    endTime: '09:32'
   }];
 
   // 表情符号数据
@@ -495,28 +526,62 @@ const CustomerServiceWorkspace: React.FC<CustomerServiceWorkspaceProps> = ({
           </Panel>)}
       </Collapse>
     </div>;
-  const renderConversationItem = (item: ConversationItem) => <List.Item key={item.id} className={`conversation-item ${getPriorityClass(item.priority)} ${selectedConversation === item.id ? 'selected' : ''}`} onClick={() => setSelectedConversation(item.id)}>
-      <List.Item.Meta avatar={<Badge count={item.unreadCount} size="small">
-            <Avatar src={item.avatar} />
-          </Badge>} title={<div className="conversation-header">
-            <Text strong>{item.userName}</Text>
-            <Text type="secondary" className="wait-time">
-              排队时间: {formatTime(item.waitTime)}
-            </Text>
-          </div>} description={<div>
-            <div style={{
-        marginBottom: 4
-      }}>
-              <Tag color="blue">{item.enterpriseScale}</Tag>
-              <Tag color={item.hasCertificate ? "green" : "orange"}>
-                {item.hasCertificate ? "有证书" : "无证书"}
-              </Tag>
+  const renderConversationItem = (item: ConversationItem) => {
+    const getTimeDisplay = () => {
+      switch (item.status) {
+        case 'waiting':
+          return (
+            <div>
+              <div>消息时间: {item.lastMessageTime}</div>
+              <div>排队时长: {formatTime(item.waitTime)}</div>
             </div>
-            <Text type="secondary" ellipsis>
-              {item.lastMessage}
-            </Text>
-          </div>} />
-    </List.Item>;
+          );
+        case 'serving':
+          return `消息时间: ${item.lastMessageTime}`;
+        case 'completed':
+          return `结束时间: ${item.endTime}`;
+        default:
+          return item.lastMessageTime;
+      }
+    };
+
+    return (
+      <List.Item 
+        key={item.id} 
+        className={`conversation-item ${getPriorityClass(item.priority)} ${selectedConversation === item.id ? 'selected' : ''}`} 
+        onClick={() => setSelectedConversation(item.id)}
+      >
+        <List.Item.Meta 
+          avatar={
+            <Badge count={item.unreadCount} size="small">
+              <Avatar src={item.avatar} />
+            </Badge>
+          } 
+          title={
+            <div className="conversation-header">
+              <Text strong>{item.userName}</Text>
+              <Text type="secondary" className="wait-time">
+                {getTimeDisplay()}
+              </Text>
+            </div>
+          } 
+          description={
+            <div>
+              <div style={{ marginBottom: 4 }}>
+                <Tag color="blue">{item.enterpriseScale}</Tag>
+                <Tag color={item.hasCertificate ? "green" : "orange"}>
+                  {item.hasCertificate ? "有证书" : "无证书"}
+                </Tag>
+              </div>
+              <Text type="secondary" ellipsis>
+                {item.lastMessage}
+              </Text>
+            </div>
+          } 
+        />
+      </List.Item>
+    );
+  };
   const renderMessage = (message: Message) => <div key={message.id} className={`message ${message.sender === 'user' ? 'message-user' : 'message-agent'}`}>
       <div className="message-content">
         {message.type === 'code' ? <div className="code-block">
